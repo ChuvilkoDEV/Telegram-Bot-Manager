@@ -1,4 +1,5 @@
 // src/App.js
+import './bootstrap.min.css';
 import React, { useContext } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { UserContext, UserProvider } from './UserContext';
@@ -7,6 +8,7 @@ import UserProfile from './UserProfile';
 
 const PrivateRoute = ({ children }) => {
   const { user } = useContext(UserContext);
+  console.log(user);
   return user ? children : <Navigate to="/login" />;
 };
 
@@ -19,14 +21,13 @@ const App = () => {
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route 
-              path="/profile" 
-              element={
+              path="/panel" element={
                 <PrivateRoute>
                   <UserProfile />
                 </PrivateRoute>
               } 
             />
-            <Route path="*" element={<Navigate to="/profile" />} />
+            <Route path="*" element={<Navigate to="/login" />} />
           </Routes>
         </div>
       </Router>
