@@ -1,4 +1,3 @@
-// src/Login.js
 import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
@@ -17,10 +16,15 @@ const Login = () => {
         'email': username,
         "password": password,
       });
+      console.log(response)
       const userData = response.data;
-      console.log(userData);
+      
+      // Сохраняем значение в куки
+      Cookies.set('username', userData.username, { expires: 7 }); // expires в днях
+
       login(userData);
     } catch (err) {
+        console.log(err);
       setError('Login failed. Please check your username and password.');
     }
   };

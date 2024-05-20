@@ -1,8 +1,9 @@
-// src/UserProfile.js
 import React, { useContext } from 'react';
 import { UserContext } from './UserContext';
+import Cookies from 'js-cookie';
 
 const UserProfile = () => {
+    const username = Cookies.get('username');
   const { user, logout } = useContext(UserContext);
 
   if (!user) {
