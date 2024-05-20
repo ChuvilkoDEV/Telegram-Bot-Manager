@@ -19,7 +19,6 @@ const Login = () => {
         'email': email,
         "password": password,
       });
-      console.log(response)
       const userData = response.data;
       if (userData.status !== 'success') {
         throw new Error('Неверный логин и/или пароль.')
@@ -31,7 +30,6 @@ const Login = () => {
 
       login(userData);
       navigate('/panel')
-    //   <Navigate to="/login" />
     } catch (err) {
         console.log(err);
       setError('Login failed. Please check your username and password.');
