@@ -1,10 +1,10 @@
 // src/App.js
-import './bootstrap.min.css';
+import './css/bootstrap.min.css';
 import React, { useContext } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import { UserContext, UserProvider } from './UserContext';
-import Login from './Login';
-import UserProfile from './UserProfile';
+import { UserContext, UserProvider } from './components/UserContext';
+import Login from './components/Login';
+import UserProfile from './components/UserProfile';
 
 const PrivateRoute = ({ children }) => {
   const { user } = useContext(UserContext);
