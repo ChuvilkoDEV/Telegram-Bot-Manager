@@ -1,3 +1,19 @@
-.form-group {
-    padding: 10px;
+body {
+    display: flex;
 }
+.sidebar {
+    width: 250px;
+    background-color: #f8f9fa;
+    height: 100vh;
+    padding-top: 20px;
+}
+.sidebar .nav-link {
+    color: #333;
+}
+.sidebar .nav-link.active {
+    background-color: #e9ecef;
+}
+
+/* .form-group {
+    padding: 10px;
+} */

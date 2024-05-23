@@ -1,5 +1,6 @@
 // src/App.js
 import './css/bootstrap.min.css';
+import './css/style.css';
 import React, { useContext } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { UserContext, UserProvider } from './components/UserContext';
@@ -16,14 +17,14 @@ const App = () => {
   return (
     <UserProvider>
       <Router>
-        <div className="container">
-          <h1 className="mt-5">My App</h1>
+        {/* <div className="container">
+          <h1 className="mt-5">My App</h1> */}
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/panel" element={<Panel />} />
             <Route path="*" element={<Navigate to="/login" />} />
           </Routes>
-        </div>
+        {/* </div> */}
       </Router>
     </UserProvider>
   );

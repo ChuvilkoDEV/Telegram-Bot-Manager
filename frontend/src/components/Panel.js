@@ -12,22 +12,27 @@ const Panel = () => {
 
   function Menu({ verboseName, name }) {
     return (
-        <button onClick={() => setCurrentMenu(name)}>
+      <li class="nav-item">
+        <button 
+          className={`nav-link ${currentMenu === name ? 'active' : ''}`} 
+          onClick={() => setCurrentMenu(name)}>
           {verboseName}
         </button>
+      </li>
       );
   }
 
 
   function Sidebar() {
     return (
-      <div>
-        <p>Telegram Bot Manager</p>
-        <p>Выберите раздел:</p>
+      <div class="sidebar d-flex flex-column p-3">
+        <h4 class="mb-4">Telegram Bot Manager</h4>
+        <ul class="nav flex-column">
         <Menu verboseName='Сессии' name='Sessions' />
         <Menu verboseName='Задачи' name='Tasks' />
         <Menu verboseName='Авто-задачи' name='AutoTasks' />
         <Menu verboseName='Обновить' name='Update' />
+        </ul>
       </div>
     )
   }
@@ -60,12 +65,12 @@ const Panel = () => {
   }
 
   return (
-    <div className="container mt-5">
+    < >
       <Sidebar/>
       <p>{currentMenu}</p>
       {/* <h1>Welcome, {user.token}!</h1>
       <button onClick={logout} className="btn btn-secondary">Logout</button> */}
-    </div>
+    </>
   );
 }
 
