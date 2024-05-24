@@ -28,6 +28,11 @@ export default function Table() {
     fetchSessions();
   }, []);
 
+  const statuses = {
+    0: ['Бан', 'text-danger'],
+    1: ['Работает', 'text-success'],
+    2: ['Восстановленно', 'text-warning'],
+  }
   const filteredData = useMemo(() => {
     if (!filterStatus) return sessions;
     return sessions.filter(session => session.ban === filterStatus);
@@ -45,7 +50,7 @@ export default function Table() {
         Header: 'BAN status',
         accessor: 'ban',
         Cell: ({ value }) => (
-          <span className={value === 'Бан' ? 'text-danger' : 'text-success'}>{value}</span>
+          <span className={statuses[value][1]}>{statuses[value][0]}</span>
         ),
       },
       {
@@ -75,7 +80,8 @@ export default function Table() {
     canPreviousPage,
     canNextPage,
     pageOptions,
-    state: { pageIndex },
+    setPageSize,
+    state: { pageIndex, pageSize },
   } = useTable(
     {
       columns,
@@ -101,7 +107,7 @@ export default function Table() {
         <div className="filters">
           <button className="btn btn-primary" onClick={() => setFilterStatus(null)}>Всего: {total}</button>
           <button className="btn btn-success" onClick={() => setFilterStatus(1)}>Работают: {working}</button>
-          <button className="btn btn-info" onClick={() => setFilterStatus(2)}>Восстановлено: {recovered}</button>
+          <button className="btn btn-warning" onClick={() => setFilterStatus(2)}>Восстановлено: {recovered}</button>
           <button className="btn btn-danger" onClick={() => setFilterStatus(0)}>Забанено: {banned}</button>
           <button className="btn btn-secondary" onClick={() => setFilterStatus(3)}>Прокси: {proxy}</button>
         </div>
@@ -131,19 +137,30 @@ export default function Table() {
             })}
           </tbody>
         </table>
-        <div className="pagination">
-          <button onClick={() => previousPage()} disabled={!canPreviousPage}>
-            Предыдущая
-          </button>{' '}
-          <button onClick={() => nextPage()} disabled={!canNextPage}>
-            Следующая
-          </button>{' '}
-          <span>
-            Страница{' '}
-            <strong>
-              {pageIndex + 1} из {pageOptions.length}
-            </strong>{' '}
-          </span>
+        <div className="pagination-container">
+          <div className="pagination">
+            <button onClick={() => previousPage()} disabled={!canPreviousPage}>
+              Предыдущая
+            </button>{' '}
+            <button onClick={() => nextPage()} disabled={!canNextPage}>
+              Следующая
+            </button>{' '}
+            <span>
+              Страница{' '}
+              <strong>
+                {pageIndex + 1} из {pageOptions.length}
+              </strong>{' '}
+            </span>
+          </div>
+          <div className="page-size-options">
+            <span>Показать </span>
+            {[10, 25, 50, 100, total].map(size => (
+              <button key={size} onClick={() => setPageSize(size)} className="btn btn-link">
+                {size === total ? 'Все' : size}
+              </button>
+            ))}
+            <span>строк</span>
+          </div>
         </div>
       </div>
     </div>

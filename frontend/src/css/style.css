@@ -45,3 +45,68 @@ html {
 .table-responsive {
     margin-top: 20px;
 }
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* margin-top: 20px; */
+}
+
+.pagination button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 0 5px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.pagination button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.pagination button:hover:not(:disabled) {
+    background-color: #0056b3;
+}
+
+.pagination span {
+    margin: 0 10px;
+}
+
+.content {
+    padding: 20px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.filters .btn {
+    margin-right: 10px;
+}
+
+.table-responsive {
+    margin-top: 20px;
+}
+
+.pagination-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.pagination .btn {
+    margin-right: 5px;
+}
+
+.page-size-options .btn-link {
+    margin-right: 4px;
+    padding: 0;
+}
