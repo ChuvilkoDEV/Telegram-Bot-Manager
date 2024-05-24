@@ -107,9 +107,9 @@ export default function Sessions() {
         <h4>Список сессий</h4>
         <div className="filters">
           <button className="btn btn-primary" onClick={() => setFilterStatus(null)}>Всего: {total}</button>
+          <button className="btn btn-danger" onClick={() => setFilterStatus(0)}>Забанено: {banned}</button>
           <button className="btn btn-success" onClick={() => setFilterStatus(1)}>Работают: {working}</button>
           <button className="btn btn-warning" onClick={() => setFilterStatus(2)}>Восстановлено: {recovered}</button>
-          <button className="btn btn-danger" onClick={() => setFilterStatus(0)}>Забанено: {banned}</button>
           <button className="btn btn-secondary" onClick={() => setFilterStatus(3)}>Прокси: {proxy}</button>
         </div>
       </div>

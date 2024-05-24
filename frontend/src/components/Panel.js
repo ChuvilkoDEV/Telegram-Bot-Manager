@@ -5,6 +5,7 @@ import { UserContext } from './UserContext';
 import Sessions from './Sessions';
 import Tasks from './Tasks';
 import AutoTasks from './AutoTasks';
+import { Link } from 'react-router-dom';
 
 const Panel = () => {
   const { user, logout } = useContext(UserContext);
@@ -13,8 +14,26 @@ const Panel = () => {
     Sessions: { verboseName: 'Сессии', icon: 'fas fa-home', view: <Sessions /> },
     Tasks: { verboseName: 'Задачи', icon: 'fas fa-tasks', view: <Tasks /> },
     AutoTasks: { verboseName: 'Авто-задачи', icon: 'fas fa-bolt', view: <AutoTasks /> },
-    Update: { verboseName: 'Обновить', icon: 'fas fa-sync' },
   };
+
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = Cookies.get('token');
+        const response = await axios.post(
+          'http://147.45.111.226:8000/api/authWithToken',
+          { token }
+        );
+        setData(response.data.status);
+      } catch (error) {
+        console.error('Ошибка при получении данных:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   function Menu({ verboseName, name, icon }) {
     return (
@@ -56,10 +75,29 @@ const Panel = () => {
   }
 
   return (
-    <div className="wrapper">
-      <Sidebar />
-      {menus[currentMenu].view}
+    <div>
+      {data === 'ok' ? (
+        <div className="wrapper">
+          <Sidebar />
+          {menus[currentMenu].view}
+        </div>
+      ) : data === 'fail' ? (
+        <div className="alert-container">
+          <div className="row justify-content-center">
+            <div className="col-md-6">
+              <div className="alert alert-warning mt-5 text-center">
+                <h4 clclassNameass="alert-heading">Доступ запрещен</h4>
+                <p>Для просмотра этой страницы необходимо войти в учетную запись.</p>
+                <Link to="/login" className="btn btn-primary">Войти</Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <p>Loading...</p>
+      )}
     </div>
+
   );
 };
 

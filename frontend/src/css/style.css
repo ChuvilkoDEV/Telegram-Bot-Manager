@@ -67,7 +67,8 @@ html {
 .table-responsive {
     margin-top: 100px;
     overflow: auto;
-    height: calc(100vh - 170px); /* Adjust height to accommodate fixed header and pagination */
+    height: calc(100vh - 170px);
+    /* Adjust height to accommodate fixed header and pagination */
 }
 
 .table-responsive table {
@@ -95,7 +96,7 @@ html {
     margin-top: 20px;
     position: fixed;
     bottom: 0;
-    width: calc(100% - 270px); 
+    width: calc(100% - 270px);
     right: 0;
     background-color: #fff;
     padding: 10px 0;
@@ -142,7 +143,6 @@ html {
     margin-right: 4px;
     padding: 0;
     vertical-align: auto;
-    /* align-items: center; */
 }
 
 .page-size-options {
@@ -164,4 +164,15 @@ html {
 
 .btn-link:hover {
     text-decoration: underline;
+}
+
+.alert-container {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.alert {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
