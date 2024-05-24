@@ -5,6 +5,7 @@ import { useTable, useSortBy, useResizeColumns, useFilters, usePagination } from
 
 export default function Table() {
   const [sessions, setSessions] = useState([]);
+  const [filterStatus, setFilterStatus] = useState(null);
 
   useEffect(() => {
     const fetchSessions = async () => {
@@ -27,7 +28,12 @@ export default function Table() {
     fetchSessions();
   }, []);
 
-  const data = useMemo(() => sessions, [sessions]);
+  const filteredData = useMemo(() => {
+    if (!filterStatus) return sessions;
+    return sessions.filter(session => session.ban === filterStatus);
+  }, [sessions, filterStatus]);
+
+  const data = useMemo(() => filteredData, [filteredData]);
 
   const columns = useMemo(
     () => [
@@ -74,7 +80,7 @@ export default function Table() {
     {
       columns,
       data,
-      initialState: { pageIndex: 0, pageSize: 10 }, // Установите начальные значения индекса страницы и размера страницы
+      initialState: { pageIndex: 0, pageSize: 10 },
     },
     useFilters,
     useSortBy,
@@ -82,11 +88,25 @@ export default function Table() {
     usePagination
   );
 
+  const total = sessions.length;
+  const working = sessions.filter(session => session.ban === 1).length;
+  const recovered = sessions.filter(session => session.ban === 2).length;
+  const banned = sessions.filter(session => session.ban === 0).length;
+  const proxy = sessions.filter(session => session.ban === 3).length;
+
   return (
     <div className="content">
       <div className="header">
         <h4>Список сессий</h4>
+        <div className="filters">
+          <button className="btn btn-primary" onClick={() => setFilterStatus(null)}>Всего: {total}</button>
+          <button className="btn btn-success" onClick={() => setFilterStatus(1)}>Работают: {working}</button>
+          <button className="btn btn-info" onClick={() => setFilterStatus(2)}>Восстановлено: {recovered}</button>
+          <button className="btn btn-danger" onClick={() => setFilterStatus(0)}>Забанено: {banned}</button>
+          <button className="btn btn-secondary" onClick={() => setFilterStatus(3)}>Прокси: {proxy}</button>
+        </div>
       </div>
+
       <div className="table-responsive">
         <table className="table table-white table-striped" {...getTableProps()}>
           <thead>
