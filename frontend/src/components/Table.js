@@ -20,6 +20,12 @@ export default function Table() {
 
         Cookies.set('AllSessions', response.data.sessions);
         setSessions(response.data.sessions);
+
+        // response = await axios.post(
+        //   'http://147.45.111.226:8000/api/getTasks',
+        //   { token }
+        // );
+        // console.log(response.data)
       } catch (err) {
         console.error(err);
       }
@@ -33,6 +39,7 @@ export default function Table() {
     1: ['Работает', 'text-success'],
     2: ['Восстановленно', 'text-warning'],
   }
+  
   const filteredData = useMemo(() => {
     if (!filterStatus) return sessions;
     return sessions.filter(session => session.ban === filterStatus);
