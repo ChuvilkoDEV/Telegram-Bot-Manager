@@ -20,12 +20,6 @@ export default function Table() {
 
         Cookies.set('AllSessions', response.data.sessions);
         setSessions(response.data.sessions);
-
-        // response = await axios.post(
-        //   'http://147.45.111.226:8000/api/getTasks',
-        //   { token }
-        // );
-        // console.log(response.data)
       } catch (err) {
         console.error(err);
       }
@@ -38,7 +32,7 @@ export default function Table() {
     0: ['Бан', 'text-danger'],
     1: ['Работает', 'text-success'],
     2: ['Восстановленно', 'text-warning'],
-  }
+  };
   
   const filteredData = useMemo(() => {
     if (!filterStatus) return sessions;
@@ -125,19 +119,29 @@ export default function Table() {
           <thead>
             {headerGroups.map((headerGroup) => (
               <tr {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map((column) => (
-                  <th {...column.getHeaderProps()}>{column.render('Header')}</th>
-                ))}
+                {headerGroup.headers.map((column, index) => {
+                  const { key, ...rest } = column.getHeaderProps();
+                  return (
+                    <th key={index} {...rest}>
+                      {column.render('Header')}
+                    </th>
+                  );
+                })}
               </tr>
             ))}
           </thead>
           <tbody {...getTableBodyProps()}>
-            {page.map((row) => {
+            {page.map((row, rowIndex) => {
               prepareRow(row);
               return (
-                <tr {...row.getRowProps()}>
-                  {row.cells.map((cell) => {
-                    return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
+                <tr key={rowIndex} {...row.getRowProps()}>
+                  {row.cells.map((cell, cellIndex) => {
+                    const { key, ...rest } = cell.getCellProps();
+                    return (
+                      <td key={cellIndex} {...rest}>
+                        {cell.render('Cell')}
+                      </td>
+                    );
                   })}
                 </tr>
               );

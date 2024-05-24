@@ -2,18 +2,27 @@ import React, { useState, useEffect, useContext } from 'react';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import { UserContext } from './UserContext';
-import Table from './Table';
+import Sessions from './Sessions';
+import Tasks from './Tasks';
+import AutoTasks from './AutoTasks';
 
 const Panel = () => {
   const { user, logout } = useContext(UserContext);
   const [currentMenu, setCurrentMenu] = useState('Sessions');
+  const menus = {
+    Sessions: { verboseName: 'Сессии', icon: 'fas fa-home', view: <Sessions /> },
+    Tasks: { verboseName: 'Задачи', icon: 'fas fa-tasks', view: <Tasks /> },
+    AutoTasks: { verboseName: 'Авто-задачи', icon: 'fas fa-bolt', view: <AutoTasks /> },
+    Update: { verboseName: 'Обновить', icon: 'fas fa-sync' },
+  };
 
-  function Menu({ verboseName, name }) {
+  function Menu({ verboseName, name, icon }) {
     return (
       <li className="nav-item">
         <button
           className={`nav-link ${currentMenu === name ? 'active' : ''}`}
           onClick={() => setCurrentMenu(name)}>
+          <i className={icon}></i>
           {verboseName}
         </button>
       </li>
@@ -25,10 +34,16 @@ const Panel = () => {
       <div className="sidebar d-flex flex-column p-3">
         <h4 className="mb-4">Telegram Bot Manager</h4>
         <ul className="nav flex-column">
-          <Menu verboseName='Сессии' name='Sessions' />
-          <Menu verboseName='Задачи' name='Tasks' />
-          <Menu verboseName='Авто-задачи' name='AutoTasks' />
-          <Menu verboseName='Обновить' name='Update' />
+          {
+            Object.keys(menus).map(key => (
+              <Menu
+                key={key}
+                verboseName={menus[key].verboseName}
+                name={key}
+                icon={menus[key].icon}
+              />
+            ))
+          }
         </ul>
         <div className="mt-auto">
           <div className="user-info">
@@ -40,27 +55,12 @@ const Panel = () => {
     );
   }
 
-  
-  // useEffect(() => {
-  //   const fetchSessions = async () => {
-  //     const token = Cookies.get('token');
-  //     const response = await axios.post(
-  //       'http://147.45.111.226:8000/api/authWithToken',
-  //       { token }
-  //     );
-  //     if (response.data.status !== 'ok')
-  //       user = false;
-  //   };
-
-  //   fetchSessions();
-  // }, []);
-
   return (
     <div className="wrapper">
       <Sidebar />
-      <Table />
+      {menus[currentMenu].view}
     </div>
   );
-}
+};
 
 export default Panel;
