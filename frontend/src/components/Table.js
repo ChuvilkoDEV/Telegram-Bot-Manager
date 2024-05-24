@@ -28,7 +28,7 @@ export default function Table() {
     fetchSessions();
   }, []);
 
-  
+
 
   return (
     <div className="content">
@@ -44,28 +44,29 @@ export default function Table() {
         </div>
       </div>
       <div className="table-responsive">
-        <table className="table table-dark table-striped">
+        <table className="table table-white table-striped">
           <thead>
             <tr>
               <th><input type="checkbox" /></th>
-              <th>#ID</th>
+              <th>Номер телефона</th>
               <th>BAN status</th>
-              <th>Filename</th>
-              <th>Group</th>
-              <th>Category</th>
-              <th>Date</th>
+              <th>Группа</th>
+              <th>Прокси</th>
+              <th>Дата</th>
             </tr>
           </thead>
           <tbody>
             {sessions.map(item => (
               <tr key={item.id}>
                 <td><input type="checkbox" /></td>
-                <td>#{item.id}</td>
-                <td className={item.status === 'Бан' ? 'text-danger' : 'text-success'}>{item.status}</td>
-                <td>{item.filename}</td>
+                <td>{item.tagName}</td>
+                <td
+                  className={item.ban == 1 ? 'text-success' : 'text-danger'}>
+                  {item.ban == 1 ? 'Живой' : 'Забанен'}
+                </td>
                 <td>{item.group}</td>
-                <td>{item.category}</td>
-                <td>{item.date}</td>
+                <td>{item.proxy}</td>
+                <td>{item.dateAdd}</td>
               </tr>
             ))}
           </tbody>
