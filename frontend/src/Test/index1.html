@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sidebar Example</title>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" rel="stylesheet">
+<style>
+body, html {
+    height: 100%;
+    margin: 0;
+}
+.wrapper {
+    display: flex;
+    min-height: 100vh;
+}
+.sidebar {
+    width: 250px;
+    background-color: #f8f9fa;
+    padding-top: 20px;
+    flex-shrink: 0;
+}
+.sidebar .nav-link {
+    color: #333;
+}
+.sidebar .nav-link.active {
+    background-color: #e9ecef;
+}
+.content {
+    flex-grow: 1;
+    padding: 20px;
+}
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #fff;
+    border-bottom: 1px solid #dee2e6;
+}
+.header h4 {
+    margin: 0;
+}
+.table-responsive {
+    margin-top: 20px;
+}
+</style>
+</head>
+<body>
+<div class="wrapper">
+    <div class="sidebar d-flex flex-column p-3">
+        <h4 class="mb-4">Telegram Bot Manager</h4>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link active" href="#"><i class="fas fa-home"></i> Сессии</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#"><i class="fas fa-tasks"></i> Задачи</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#"><i class="fas fa-bolt"></i> Авто-задачи</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#"><i class="fas fa-sync"></i> Обновить</a>
+            </li>
+        </ul>
+    </div>
+    <div class="content">
+        <div class="header">
+            <h4>Active issues</h4>
+            <div>
+                <button class="btn btn-outline-secondary"><i class="fas fa-list"></i></button>
+                <button class="btn btn-outline-secondary"><i class="fas fa-calendar-alt"></i></button>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Task</th>
+                        <th>Title</th>
+                        <th>Project</th>
+                        <th>Priority</th>
+                        <th>Date</th>
+                        <th>Owner</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>FIG-123</td>
+                        <td>Task 1</td>
+                        <td>Project 1</td>
+                        <td>High</td>
+                        <td>Dec 5</td>
+                        <td><img src="https://via.placeholder.com/30" class="rounded-circle" alt="Owner"></td>
+                    </tr>
+                    <tr>
+                        <td>FIG-122</td>
+                        <td>Task 2</td>
+                        <td>Acme GTM</td>
+                        <td>Low</td>
+                        <td>Dec 5</td>
+                        <td><img src="https://via.placeholder.com/30" class="rounded-circle" alt="Owner"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

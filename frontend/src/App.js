@@ -17,14 +17,11 @@ const App = () => {
   return (
     <UserProvider>
       <Router>
-        {/* <div className="container">
-          <h1 className="mt-5">My App</h1> */}
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/panel" element={<Panel />} />
-            <Route path="*" element={<Navigate to="/login" />} />
-          </Routes>
-        {/* </div> */}
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/panel" element={<Panel />} />
+          <Route path="*" element={<Navigate to="/login" />} />
+        </Routes>
       </Router>
     </UserProvider>
   );
