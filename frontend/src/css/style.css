@@ -24,16 +24,26 @@ html {
 
 .sidebar .nav-link {
     color: #333;
+    width: 100%;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 20px;
 }
 
 .sidebar .nav-link.active {
     background-color: #e9ecef;
 }
 
+.menu-icon {
+    margin-right: 10px;
+}
+
 .content {
     flex-grow: 1;
     padding: 20px;
-    margin-left: 250px; /* Adjust this to match the sidebar width */
+    margin-left: 250px;
 }
 
 .header {
@@ -43,6 +53,11 @@ html {
     padding: 10px 20px;
     background-color: #fff;
     border-bottom: 1px solid #dee2e6;
+    position: fixed;
+    width: calc(100% - 250px);
+    top: 0;
+    left: 250px;
+    z-index: 1000;
 }
 
 .header h4 {
@@ -50,13 +65,49 @@ html {
 }
 
 .table-responsive {
+    margin-top: 100px;
+    overflow: auto;
+    height: calc(100vh - 170px); /* Adjust height to accommodate fixed header and pagination */
+}
+
+.table-responsive table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.fixed-table th,
+.fixed-table td {
+    width: 150px;
+    white-space: nowrap;
+}
+
+.fixed-table th {
+    position: sticky;
+    top: 0;
+    background-color: #f8f9fa;
+    z-index: 500;
+}
+
+.pagination-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-top: 20px;
+    position: fixed;
+    bottom: 0;
+    width: calc(100% - 270px); 
+    right: 0;
+    background-color: #fff;
+    padding: 10px 0;
+    box-shadow: none;
+    /* box-shadow: 0 -2px 5px rgba(0,0,0,0.1); */
 }
 
 .pagination {
     display: flex;
     justify-content: center;
     align-items: center;
+    padding-right: 10px;
 }
 
 .pagination button {
@@ -87,24 +138,15 @@ html {
     margin-right: 10px;
 }
 
-.table-responsive {
-    margin-top: 20px;
-}
-
-.pagination-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 20px;
-}
-
-.pagination .btn {
-    margin-right: 5px;
-}
-
-.page-size-options .btn-link {
+.btn-link {
     margin-right: 4px;
     padding: 0;
+    vertical-align: auto;
+    /* align-items: center; */
+}
+
+.page-size-options {
+    margin-right: 50px;
 }
 
 .user-info {

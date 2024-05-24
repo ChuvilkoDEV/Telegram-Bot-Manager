@@ -22,7 +22,7 @@ const Panel = () => {
         <button
           className={`nav-link ${currentMenu === name ? 'active' : ''}`}
           onClick={() => setCurrentMenu(name)}>
-          <i className={icon}></i>
+          <i className={`${icon} menu-icon`}></i>
           {verboseName}
         </button>
       </li>

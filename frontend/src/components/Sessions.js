@@ -3,7 +3,7 @@ import Cookies from 'js-cookie';
 import axios from 'axios';
 import { useTable, useSortBy, useResizeColumns, useFilters, usePagination } from 'react-table';
 
-export default function Table() {
+export default function Sessions() {
   const [sessions, setSessions] = useState([]);
   const [filterStatus, setFilterStatus] = useState(null);
 
@@ -31,9 +31,9 @@ export default function Table() {
   const statuses = {
     0: ['Бан', 'text-danger'],
     1: ['Работает', 'text-success'],
-    2: ['Восстановленно', 'text-warning'],
+    2: ['Восстановлено', 'text-warning'],
   };
-  
+
   const filteredData = useMemo(() => {
     if (!filterStatus) return sessions;
     return sessions.filter(session => session.ban === filterStatus);
@@ -114,8 +114,8 @@ export default function Table() {
         </div>
       </div>
 
-      <div className="table-responsive">
-        <table className="table table-white table-striped" {...getTableProps()}>
+      <div className="table-responsive fixed-table-container">
+        <table className="table table-white table-striped fixed-table" {...getTableProps()}>
           <thead>
             {headerGroups.map((headerGroup) => (
               <tr {...headerGroup.getHeaderGroupProps()}>
