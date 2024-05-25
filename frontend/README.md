@@ -1,18 +1,32 @@
-# Getting Started with Create React App
+# Telegram Bot Manager
+Сайт, для управления ботами телеграма
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Установка (Windows)
+У вас должен быть установлен NodeJS и пакетный менеджер npm/npx.
 
-## Available Scripts
+### 1. Клонирование репозитория 
 
-In the project directory, you can run:
+### ```git clone https://github.com/ChuvilkoDEV/Telegram-Bot-Manager.git```
+
+### 2. Переход в директорию frontend
+
+### ```cd frontend```
+
+### 3. Установка зависимостей
+
+### ```npm i```
+
+
+## Запуск приложения
 
 ### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Запускает приложение в режиме разработки.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Открывает в браузере страницу [http://localhost:3000](http://localhost:3000), на которой и будет располагаться сайт.
+
+
+--------------- Дальше бога нет ---------------
 
 ### `npm test`
 
