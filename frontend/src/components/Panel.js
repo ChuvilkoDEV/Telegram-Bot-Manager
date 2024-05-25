@@ -1,3 +1,4 @@
+// src/components/Panel.js
 import React, { useState, useEffect, useContext } from 'react';
 import Cookies from 'js-cookie';
 import axios from 'axios';
@@ -26,8 +27,10 @@ const Panel = () => {
           'http://147.45.111.226:8000/api/authWithToken',
           { token }
         );
+        console.log(response.data)
         setData(response.data.status);
       } catch (error) {
+        setData('fail');
         console.error('Ошибка при получении данных:', error);
       }
     };
@@ -86,7 +89,7 @@ const Panel = () => {
           <div className="row justify-content-center">
             <div className="col-md-6">
               <div className="alert alert-warning mt-5 text-center">
-                <h4 clclassNameass="alert-heading">Доступ запрещен</h4>
+                <h4 className="alert-heading">Доступ запрещен</h4>
                 <p>Для просмотра этой страницы необходимо войти в учетную запись.</p>
                 <Link to="/login" className="btn btn-primary">Войти</Link>
               </div>
@@ -97,7 +100,6 @@ const Panel = () => {
         <p>Loading...</p>
       )}
     </div>
-
   );
 };
 
