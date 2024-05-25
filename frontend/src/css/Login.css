@@ -1,27 +1,97 @@
 .login-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #f8f9fa;
-  }
-  
-  .login-form {
-    width: 100%;
-    max-width: 400px;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .login-form .form-group,
-  .login-form .form-check {
-    margin-top: 20px;
-    margin-bottom: 20px;
-  }
-  
-  .login-form .btn {
-    width: 100%;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #fff;
+}
+
+.nav-buttons {
+  display: flex;
+  margin-bottom: 20px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.nav-button {
+  flex: 1;
+  text-align: center;
+  padding: 10px 20px;
+  margin: 0 5px;
+  text-decoration: none;
+  color: #000;
+  border: 1px solid #000;
+  border-radius: 4px;
+}
+
+.nav-button.active {
+  background-color: #000;
+  color: #fff;
+}
+
+.login-form {
+  text-align: center;
+  width: 100%;
+  max-width: 400px;
+}
+
+.login-form h2 {
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 10px;
+  background-color: #000;
+  border: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.btn-primary:hover {
+  background-color: #333;
+}
+
+.additional-links {
+  margin-top: 10px;
+}
+
+.forgot-password-link {
+  color: #000;
+  text-decoration: underline;
+}
+
+.forgot-password-link:hover {
+  text-decoration: none;
+}
+
+.terms {
+  margin-top: 20px;
+  color: #666;
+  font-size: 14px;
+}
+
+.terms a {
+  color: #000;
+  text-decoration: underline;
+}
+
+.terms a:hover {
+  text-decoration: none;
+}

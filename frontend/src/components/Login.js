@@ -1,14 +1,13 @@
 import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { UserContext } from './UserContext';
-import '../css/Login.css'; 
+import '../css/Login.css';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const { login } = useContext(UserContext);
@@ -25,8 +24,8 @@ const Login = () => {
         throw new Error('Неверный логин и/или пароль.');
       }
 
-      Cookies.set('username', userData.username, { expires: 7 }); // expires в днях
-      Cookies.set('token', userData.token, { expires: 7 }); // expires в днях
+      Cookies.set('username', userData.username, { expires: 7 });
+      Cookies.set('token', userData.token, { expires: 7 });
 
       login(userData);
       navigate('/panel');
@@ -38,52 +37,44 @@ const Login = () => {
 
   return (
     <div className="login-container">
+      <div className="nav-buttons">
+        <Link to="/login" className="nav-button active">Вход</Link>
+        <Link to="/register" className="nav-button">Регистрация</Link>
+      </div>
       <div className="login-form">
-        <h2>Login</h2>
+        <h2>Войдите в аккаунт</h2>
         {error && <div className="alert alert-danger" role="alert">{error}</div>}
-        <form className="form-group" onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="exampleInputEmail1">Email address</label>
             <input
               type="email"
               className="form-control"
-              id="exampleInputEmail1"
-              aria-describedby="emailHelp"
-              placeholder="Enter email"
+              placeholder="email@domain.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-            <small id="emailHelp" className="form-text text-muted">
-              We'll never share your email with anyone else.
-            </small>
           </div>
           <div className="form-group">
-            <label htmlFor="exampleInputPassword1">Password</label>
             <input
               type="password"
               className="form-control"
-              id="exampleInputPassword1"
-              placeholder="Password"
+              placeholder="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <div className="form-check">
-            <input
-              type="checkbox"
-              className="form-check-input"
-              id="exampleCheck1"
-              checked={rememberMe}
-              onChange={(e) => setRememberMe(e.target.checked)}
-            />
-            <label className="form-check-label" htmlFor="exampleCheck1">
-              Check me out
-            </label>
-          </div>
           <button type="submit" className="btn btn-primary">
-            Submit
+            Войти
           </button>
         </form>
+        <div className="additional-links">
+          <Link to="/forgot-password" className="forgot-password-link">
+            Не помню пароль
+          </Link>
+        </div>
+        <p className="terms">
+          Нажимая "Войти", вы соглашаетесь с нашими <a href="/terms">Условиями обслуживания</a> и <a href="/privacy">Политикой конфиденциальности</a>.
+        </p>
       </div>
     </div>
   );
