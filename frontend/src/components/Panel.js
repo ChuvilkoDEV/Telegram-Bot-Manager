@@ -24,6 +24,7 @@ const Panel = () => {
         { token }
       );
       setUserData(response.data);
+      Cookies.set('userData', response.data.role);
       setUserStatus(response.data.status);
     } catch (error) {
       setUserStatus('fail');
@@ -37,7 +38,6 @@ const Panel = () => {
       if (response.data.status !== 'ok')
         throw new Error('Что-то пошло не так...');
 
-      Cookies.set('MySessions', response.data.sessions);
       setSessions(response.data.sessions);
     } catch (err) {
       console.error(err);
@@ -49,8 +49,6 @@ const Panel = () => {
       );
       if (response.data.status !== 'ok')
         throw new Error('Что-то пошло не так...');
-
-      Cookies.set('AllSessions', response.data.sessions);
       setAllSessions(response.data.sessions);
     } catch (err) {
       console.error(err);
@@ -103,7 +101,7 @@ const Panel = () => {
         </ul>
         <div className="mt-auto">
           <div className="user-info">
-            <span>admin</span>
+            <span>{userData.role}</span>
           </div>
           <button className="btn btn-link" onClick={logout}>Выйти</button>
         </div>

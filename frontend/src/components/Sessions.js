@@ -1,5 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { useTable, useSortBy, useResizeColumns, useFilters, usePagination } from 'react-table';
+import Cookies from 'js-cookie';
+
 
 export default function Sessions({ sessions = [], allSessions = [], refreshData }) {
   const [filterStatus, setFilterStatus] = useState(null);
@@ -80,16 +82,18 @@ export default function Sessions({ sessions = [], allSessions = [], refreshData 
   const banned = currentSessions.filter(session => session.ban === 1).length;
   const proxy = currentSessions.filter(session => session.ban === 3).length;
 
+  const isAdmin = Cookies.get('userData') == 'admin';
   return (
     <div className="content">
       <div className="header">
         <h4>Список сессий</h4>
-        <button
+        {isAdmin ? <button
           className="btn btn-info toggle-sessions"
           onClick={() => setIsAllSessions(!isAllSessions)}
         >
           {isAllSessions ? 'Мои сессии' : 'Все сессии'}
-        </button>
+        </button> : ""}
+        
         <button
           className="btn btn-secondary refresh-data"
           onClick={refreshData}
