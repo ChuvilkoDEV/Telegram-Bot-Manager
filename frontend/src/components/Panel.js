@@ -1,4 +1,3 @@
-// src/components/Panel.js
 import React, { useState, useEffect, useContext } from 'react';
 import Cookies from 'js-cookie';
 import axios from 'axios';
@@ -12,33 +11,66 @@ import { Link } from 'react-router-dom';
 const Panel = () => {
   const { user, logout } = useContext(UserContext);
   const [currentMenu, setCurrentMenu] = useState('Sessions');
+  const [userStatus, setUserStatus] = useState(null);
+  const [userData, setUserData] = useState(null);
+  const [allSessions, setAllSessions] = useState([]);
+  const [sessions, setSessions] = useState([]);
+
+  const fetchData = async () => {
+    const token = Cookies.get('token');
+    try {
+      const response = await axios.post(
+        'http://147.45.111.226:8000/api/authWithToken',
+        { token }
+      );
+      setUserData(response.data);
+      setUserStatus(response.data.status);
+    } catch (error) {
+      setUserStatus('fail');
+      console.error('Ошибка при получении данных:', error);
+    }
+    try {
+      const response = await axios.post(
+        'http://147.45.111.226:8000/api/getMySessions',
+        { token }
+      );
+      if (response.data.status !== 'ok')
+        throw new Error('Что-то пошло не так...');
+
+      Cookies.set('MySessions', response.data.sessions);
+      setSessions(response.data.sessions);
+    } catch (err) {
+      console.error(err);
+    }
+    try {
+      const response = await axios.post(
+        'http://147.45.111.226:8000/api/getAllSessions',
+        { token }
+      );
+      if (response.data.status !== 'ok')
+        throw new Error('Что-то пошло не так...');
+
+      Cookies.set('AllSessions', response.data.sessions);
+      setAllSessions(response.data.sessions);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const refreshData = () => {
+    fetchData();
+  };
+
   const menus = {
-    Sessions: { verboseName: 'Сессии', icon: 'fas fa-home', view: <Sessions /> },
+    Sessions: { verboseName: 'Сессии', icon: 'fas fa-home', view: <Sessions sessions={sessions} allSessions={allSessions} refreshData={refreshData} /> },
     Tasks: { verboseName: 'Задачи', icon: 'fas fa-tasks', view: <Tasks /> },
     AutoTasks: { verboseName: 'Авто-задачи', icon: 'fas fa-bolt', view: <AutoTasks /> },
     AddSession: { verboseName: 'Добавить сессию', icon: 'fas fa-bolt', view: <AddSession /> },
   };
-
-  const [data, setData] = useState(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const token = Cookies.get('token');
-        const response = await axios.post(
-          'http://147.45.111.226:8000/api/authWithToken',
-          { token }
-        );
-        console.log(response.data)
-        setData(response.data.status);
-      } catch (error) {
-        setData('fail');
-        console.error('Ошибка при получении данных:', error);
-      }
-    };
-
-    fetchData();
-  }, []);
 
   function Menu({ verboseName, name, icon }) {
     return (
@@ -81,12 +113,12 @@ const Panel = () => {
 
   return (
     <div>
-      {data === 'ok' ? (
+      {userStatus === 'ok' ? (
         <div className="wrapper">
           <Sidebar />
           {menus[currentMenu].view}
         </div>
-      ) : data === 'fail' ? (
+      ) : userStatus === 'fail' ? (
         <div className="alert-container">
           <div className="row justify-content-center">
             <div className="col-md-6">

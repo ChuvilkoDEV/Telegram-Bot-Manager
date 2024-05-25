@@ -2,10 +2,15 @@ import React, { useMemo, useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import { useTable, useSortBy, useResizeColumns, useFilters, usePagination } from 'react-table';
+import { Link } from 'react-router-dom';
 
 export default function Tasks() {
   const [tasks, setTasks] = useState([]);
-
+  const taskType = {
+    subs: 'Подписки',
+    view: 'Просмотры',
+    react: 'Реакции',
+  }
   useEffect(() => {
     const fetchTasks = async () => {
       try {
@@ -33,10 +38,16 @@ export default function Tasks() {
       {
         Header: 'Тип задачи',
         accessor: 'task_type',
+        Cell: ({ value }) => (
+          <span>{taskType[value]}</span>
+        ),
       },
       {
         Header: 'Цель',
         accessor: 'task_target',
+        Cell: ({ value }) => (
+          <Link to={value}>{value}</Link>
+        ),
       },
       {
         Header: 'Выполнение',

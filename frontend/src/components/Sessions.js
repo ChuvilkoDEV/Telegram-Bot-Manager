@@ -1,32 +1,9 @@
-import React, { useMemo, useEffect, useState } from 'react';
-import Cookies from 'js-cookie';
-import axios from 'axios';
+import React, { useMemo, useState } from 'react';
 import { useTable, useSortBy, useResizeColumns, useFilters, usePagination } from 'react-table';
 
-export default function Sessions() {
-  const [sessions, setSessions] = useState([]);
+export default function Sessions({ sessions = [], allSessions = [], refreshData }) {
   const [filterStatus, setFilterStatus] = useState(null);
-
-  useEffect(() => {
-    const fetchSessions = async () => {
-      try {
-        const token = Cookies.get('token');
-        const response = await axios.post(
-          'http://147.45.111.226:8000/api/getAllSessions',
-          { token }
-        );
-        if (response.data.status !== 'ok')
-          throw new Error('Что-то пошло не так...');
-
-        Cookies.set('AllSessions', response.data.sessions);
-        setSessions(response.data.sessions);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
-    fetchSessions();
-  }, []);
+  const [isAllSessions, setIsAllSessions] = useState(false);
 
   const statuses = {
     0: ['Работает', 'text-success'],
@@ -34,10 +11,12 @@ export default function Sessions() {
     2: ['Восстановлено', 'text-warning'],
   };
 
+  const currentSessions = isAllSessions ? allSessions : sessions;
+
   const filteredData = useMemo(() => {
-    if (!filterStatus) return sessions.slice().reverse();
-    return sessions.filter(session => session.ban === filterStatus).slice().reverse();
-  }, [sessions, filterStatus]);
+    if (!filterStatus) return currentSessions.slice().reverse();
+    return currentSessions.filter(session => session.ban === filterStatus).slice().reverse();
+  }, [currentSessions, filterStatus]);
 
   const data = useMemo(() => filteredData, [filteredData]);
 
@@ -90,21 +69,33 @@ export default function Sessions() {
       initialState: { pageIndex: 0, pageSize: 50 },
     },
     useFilters,
-    useSortBy, 
+    useSortBy,
     useResizeColumns,
     usePagination
   );
 
-  const total = sessions.length;
-  const working = sessions.filter(session => session.ban === 0).length;
-  const recovered = sessions.filter(session => session.ban === 2).length;
-  const banned = sessions.filter(session => session.ban === 1).length;
-  const proxy = sessions.filter(session => session.ban === 3).length;
+  const total = currentSessions.length;
+  const working = currentSessions.filter(session => session.ban === 0).length;
+  const recovered = currentSessions.filter(session => session.ban === 2).length;
+  const banned = currentSessions.filter(session => session.ban === 1).length;
+  const proxy = currentSessions.filter(session => session.ban === 3).length;
 
   return (
     <div className="content">
       <div className="header">
         <h4>Список сессий</h4>
+        <button
+          className="btn btn-info toggle-sessions"
+          onClick={() => setIsAllSessions(!isAllSessions)}
+        >
+          {isAllSessions ? 'Мои сессии' : 'Все сессии'}
+        </button>
+        <button
+          className="btn btn-secondary refresh-data"
+          onClick={refreshData}
+        >
+          Обновить данные
+        </button>
         <div className="filters">
           <button className="btn btn-primary" onClick={() => setFilterStatus(null)}>Всего: {total}</button>
           <button className="btn btn-success" onClick={() => setFilterStatus(0)}>Работают: {working}</button>
@@ -120,7 +111,7 @@ export default function Sessions() {
             {headerGroups.map((headerGroup) => (
               <tr {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map((column, index) => {
-                  const { key, ...rest } = column.getHeaderProps(column.getSortByToggleProps()); // Добавлено для сортировки
+                  const { key, ...rest } = column.getHeaderProps(column.getSortByToggleProps());
                   return (
                     <th key={index} {...rest}>
                       {column.render('Header')}
