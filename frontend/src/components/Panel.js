@@ -4,7 +4,6 @@ import axios from 'axios';
 import { UserContext } from './UserContext';
 import Sessions from './Sessions';
 import Tasks from './Tasks';
-import AutoTasks from './AutoTasks';
 import AddSession from './AddSession';
 import { Link } from 'react-router-dom';
 
@@ -15,10 +14,11 @@ const Panel = () => {
   const [userData, setUserData] = useState(null);
   const [allSessions, setAllSessions] = useState([]);
   const [sessions, setSessions] = useState([]);
+  const [tasks, setTasks] = useState([]);
+  const [autoTasks, setAutoTasks] = useState([]);
 
   const fetchData = async () => {
     const token = Cookies.get('token');
-    console.log(token);
     try {
       const response = await axios.post(
         'http://147.45.111.226:8000/api/authWithToken',
@@ -54,6 +54,28 @@ const Panel = () => {
     } catch (err) {
       console.error(err);
     }
+    try {
+      const response = await axios.post(
+        'http://147.45.111.226:8000/api/getTasks',
+        { token }
+      );
+      if (response.data.status !== 'ok')
+        throw new Error('Что-то пошло не так...');
+      setTasks(response.data.data); // Убедитесь, что массив задач находится в response.data.data
+    } catch (err) {
+      console.error(err);
+    }
+    try {
+      const response = await axios.post(
+        'http://147.45.111.226:8000/api/getAutoTasks',
+        { token }
+      );
+      if (response.data.status !== 'ok')
+        throw new Error('Что-то пошло не так...');
+      setAutoTasks(response.data.data); // Убедитесь, что массив задач находится в response.data.data
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   useEffect(() => {
@@ -66,8 +88,8 @@ const Panel = () => {
 
   const menus = {
     Sessions: { verboseName: 'Сессии', icon: 'fas fa-home', view: <Sessions sessions={sessions} allSessions={allSessions} refreshData={refreshData} /> },
-    Tasks: { verboseName: 'Задачи', icon: 'fas fa-tasks', view: <Tasks /> },
-    AutoTasks: { verboseName: 'Авто-задачи', icon: 'fas fa-bolt', view: <AutoTasks /> },
+    Tasks: { verboseName: 'Задачи', icon: 'fas fa-tasks', view: <Tasks tasks={tasks}/> },
+    AutoTasks: { verboseName: 'Авто-задачи', icon: 'fas fa-bolt', view: <Tasks tasks={autoTasks}/> },
     AddSession: { verboseName: 'Добавить сессию', icon: 'fas fa-bolt', view: <AddSession /> },
   };
 
@@ -102,7 +124,7 @@ const Panel = () => {
         </ul>
         <div className="mt-auto">
           <div className="user-info">
-            <span>{userData.role}</span>
+            <span>{userData?.role}</span>
           </div>
           <button className="btn btn-link" onClick={logout}>Выйти</button>
         </div>

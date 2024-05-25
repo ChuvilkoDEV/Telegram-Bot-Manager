@@ -1,39 +1,16 @@
-import React, { useMemo, useEffect, useState } from 'react';
-import Cookies from 'js-cookie';
-import axios from 'axios';
+import React, { useMemo } from 'react';
 import { useTable, useSortBy, useResizeColumns, useFilters, usePagination } from 'react-table';
 import { Link } from 'react-router-dom';
-import '../css/Tasks.css'; // Импортируем CSS файл с нашим классом
+import '../css/Tasks.css'; 
 
-export default function Tasks() {
-  const [tasks, setTasks] = useState([]);
+export default function Tasks({ tasks }) {
   const taskType = {
     subs: 'Подписки',
     view: 'Просмотры',
     react: 'Реакции',
   }
 
-  useEffect(() => {
-    const fetchTasks = async () => {
-      try {
-        const token = Cookies.get('token');
-        const response = await axios.post(
-          'http://147.45.111.226:8000/api/getTasks',
-          { token }
-        );
-        if (response.data.status !== 'ok')
-          throw new Error('Что-то пошло не так...');
-
-        setTasks(response.data.data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
-    fetchTasks();
-  }, []);
-
-  const data = useMemo(() => tasks, [tasks]);
+  const data = useMemo(() => tasks || [], [tasks]);
 
   const columns = useMemo(
     () => [
