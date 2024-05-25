@@ -2,7 +2,7 @@
 import './css/bootstrap.min.css';
 import './css/style.css';
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { UserProvider } from './components/UserContext';
 import Login from './components/Login';
 import Panel from './components/Panel';
@@ -13,6 +13,7 @@ const App = () => {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/panel" element={<Panel />} />
+        <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     </UserProvider>
   );

@@ -11,7 +11,7 @@ export default function Tasks() {
       try {
         const token = Cookies.get('token');
         const response = await axios.post(
-          'http://your-api-endpoint.com/api/getTasks',
+          'http://147.45.111.226:8000/api/getTasks',
           { token }
         );
         if (response.data.status !== 'ok')
@@ -99,7 +99,7 @@ export default function Tasks() {
     {
       columns,
       data,
-      initialState: { pageIndex: 0, pageSize: 10 },
+      initialState: { pageIndex: 0, pageSize: 50 },
     },
     useFilters,
     useSortBy,
@@ -110,7 +110,7 @@ export default function Tasks() {
   return (
     <div className="content">
       <div className="header">
-        <h4>Task List</h4>
+        <h4>Список задач</h4>
       </div>
 
       <div className="table-responsive fixed-table-container">

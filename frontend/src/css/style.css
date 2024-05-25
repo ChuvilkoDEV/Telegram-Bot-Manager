@@ -42,7 +42,8 @@ html {
 
 .content {
     flex-grow: 1;
-    padding: 20px;
+    padding: 40px;
+    /* Увеличили отступы */
     margin-left: 250px;
 }
 
@@ -68,7 +69,6 @@ html {
     margin-top: 100px;
     overflow: auto;
     height: calc(100vh - 170px);
-    /* Adjust height to accommodate fixed header and pagination */
 }
 
 .table-responsive table {
@@ -100,8 +100,6 @@ html {
     right: 0;
     background-color: #fff;
     padding: 10px 0;
-    box-shadow: none;
-    /* box-shadow: 0 -2px 5px rgba(0,0,0,0.1); */
 }
 
 .pagination {
@@ -175,4 +173,39 @@ html {
 
 .alert {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.form-section {
+    width: 45%;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
 }

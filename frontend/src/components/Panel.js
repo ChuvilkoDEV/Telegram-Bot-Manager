@@ -6,6 +6,7 @@ import { UserContext } from './UserContext';
 import Sessions from './Sessions';
 import Tasks from './Tasks';
 import AutoTasks from './AutoTasks';
+import AddSession from './AddSession';
 import { Link } from 'react-router-dom';
 
 const Panel = () => {
@@ -15,6 +16,7 @@ const Panel = () => {
     Sessions: { verboseName: 'Сессии', icon: 'fas fa-home', view: <Sessions /> },
     Tasks: { verboseName: 'Задачи', icon: 'fas fa-tasks', view: <Tasks /> },
     AutoTasks: { verboseName: 'Авто-задачи', icon: 'fas fa-bolt', view: <AutoTasks /> },
+    AddSession: { verboseName: 'Добавить сессию', icon: 'fas fa-bolt', view: <AddSession /> },
   };
 
   const [data, setData] = useState(null);
