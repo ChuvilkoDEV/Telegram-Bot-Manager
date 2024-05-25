@@ -1,11 +1,12 @@
 import React, { useMemo, useState } from 'react';
 import { useTable, useSortBy, useResizeColumns, useFilters, usePagination } from 'react-table';
 import Cookies from 'js-cookie';
-
+import { FaFilter, FaSync, FaList } from 'react-icons/fa'; // Импорт иконок
 
 export default function Sessions({ sessions = [], allSessions = [], refreshData }) {
   const [filterStatus, setFilterStatus] = useState(null);
   const [isAllSessions, setIsAllSessions] = useState(false);
+  const [showFilters, setShowFilters] = useState(false); // Состояние для отображения фильтров
 
   const statuses = {
     0: ['Работает', 'text-success'],
@@ -87,25 +88,38 @@ export default function Sessions({ sessions = [], allSessions = [], refreshData 
     <div className="content">
       <div className="header">
         <h4>Список сессий</h4>
-        {isAdmin ? <button
-          className="btn btn-info toggle-sessions"
-          onClick={() => setIsAllSessions(!isAllSessions)}
-        >
-          {isAllSessions ? 'Мои сессии' : 'Все сессии'}
-        </button> : ""}
-        
-        <button
-          className="btn btn-secondary refresh-data"
-          onClick={refreshData}
-        >
-          Обновить данные
-        </button>
-        <div className="filters">
-          <button className="btn btn-primary" onClick={() => setFilterStatus(null)}>Всего: {total}</button>
-          <button className="btn btn-success" onClick={() => setFilterStatus(0)}>Работают: {working}</button>
-          <button className="btn btn-danger" onClick={() => setFilterStatus(1)}>Забанено: {banned}</button>
-          <button className="btn btn-warning" onClick={() => setFilterStatus(2)}>Восстановлено: {recovered}</button>
-          <button className="btn btn-secondary" onClick={() => setFilterStatus(3)}>Прокси: {proxy}</button>
+        <div className="actions">
+          {isAdmin ? (
+            <button
+              className="btn btn-info sessions-btn"
+              onClick={() => setIsAllSessions(!isAllSessions)}
+            >
+              <FaList /> {isAllSessions ? 'Мои сессии' : 'Все сессии'}
+            </button>
+          ) : ""}
+          <button
+            className="btn btn-secondary refresh-btn"
+            onClick={refreshData}
+          >
+            <FaSync /> Обновить данные
+          </button>
+          <div className="filter-icon">
+            <button
+              className="btn btn-primary filter-btn"
+              onClick={() => setShowFilters(!showFilters)}
+            >
+              <FaFilter /> Фильтры
+            </button>
+            {showFilters && (
+              <div className="filter-popup">
+                <button className="btn btn-primary filter-option-btn" onClick={() => setFilterStatus(null)}>Всего: {total}</button>
+                <button className="btn btn-success filter-option-btn" onClick={() => setFilterStatus(0)}>Работают: {working}</button>
+                <button className="btn btn-danger filter-option-btn" onClick={() => setFilterStatus(1)}>Забанено: {banned}</button>
+                <button className="btn btn-warning filter-option-btn" onClick={() => setFilterStatus(2)}>Восстановлено: {recovered}</button>
+                <button className="btn btn-secondary filter-option-btn" onClick={() => setFilterStatus(3)}>Прокси: {proxy}</button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

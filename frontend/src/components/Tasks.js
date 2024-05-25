@@ -54,39 +54,42 @@ export default function Tasks() {
         accessor: 'task_count_actions_and_completed',
         Cell: ({ row }) => {
           const { task_count_actions, task_count_actions_compite } = row.original;
-          return `${task_count_actions} / ${task_count_actions_compite}`;
+          return `${task_count_actions_compite} / ${task_count_actions}`;
         },
       },
       {
-        Header: 'Time Out',
+        Header: 'Время выполнения',
         accessor: 'task_time_out',
       },
       {
-        Header: 'Active',
+        Header: 'Активность',
         accessor: 'active',
+        Cell: ({ value }) => (
+          <span>{value === 0 ? 'Активен' : 'Неактивна'}</span>
+        ),
       },
       {
-        Header: 'Channel ID',
+        Header: 'Канал',
         accessor: 'task_id_channel',
       },
       {
-        Header: 'Actions per Timeout',
+        Header: 'Количество действий',
         accessor: 'count_action_per_timeout',
       },
       {
-        Header: 'Wave Percent',
+        Header: 'Процент волны',
         accessor: 'percetn_wave',
       },
       {
-        Header: 'Markup Spread Percent',
+        Header: 'Разброс',
         accessor: 'percent_markup_spread',
       },
       {
-        Header: 'Group',
+        Header: 'Группа',
         accessor: 'task_group',
       },
       {
-        Header: 'Date Added',
+        Header: 'Дата',
         accessor: 'dateAdd',
       },
     ],

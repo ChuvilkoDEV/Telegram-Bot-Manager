@@ -46,12 +46,13 @@ const AddSession = () => {
           formData.append('group', group);
           formData.append('category', category);
 
-          await axios.post('http://147.45.111.226:8000/api/uploadSession', formData, {
+          const response = await axios.post('http://147.45.111.226:8000/api/uploadSession', formData, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }
           });
-
+          console.log(response.data)
+          console.log(sessionFiles[accountIndex], proxy)
           accountIndex++;
         }
         if (accountIndex >= sessionFiles.length) break;

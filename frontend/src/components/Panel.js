@@ -18,6 +18,7 @@ const Panel = () => {
 
   const fetchData = async () => {
     const token = Cookies.get('token');
+    console.log(token);
     try {
       const response = await axios.post(
         'http://147.45.111.226:8000/api/authWithToken',
