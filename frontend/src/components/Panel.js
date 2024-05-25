@@ -11,6 +11,7 @@ const Panel = () => {
   const { user, logout } = useContext(UserContext);
   const [currentMenu, setCurrentMenu] = useState('Sessions');
   const [userStatus, setUserStatus] = useState(null);
+  // const [userRole, setUserRole] = useState(null);
   const [userData, setUserData] = useState(null);
   const [allSessions, setAllSessions] = useState([]);
   const [sessions, setSessions] = useState([]);
@@ -61,7 +62,7 @@ const Panel = () => {
       );
       if (response.data.status !== 'ok')
         throw new Error('Что-то пошло не так...');
-      setTasks(response.data.data); // Убедитесь, что массив задач находится в response.data.data
+      setTasks(response.data.data); 
     } catch (err) {
       console.error(err);
     }
@@ -72,7 +73,7 @@ const Panel = () => {
       );
       if (response.data.status !== 'ok')
         throw new Error('Что-то пошло не так...');
-      setAutoTasks(response.data.data); // Убедитесь, что массив задач находится в response.data.data
+      setAutoTasks(response.data.data); 
     } catch (err) {
       console.error(err);
     }
@@ -87,10 +88,11 @@ const Panel = () => {
   };
 
   const menus = {
-    Sessions: { verboseName: 'Сессии', icon: 'fas fa-home', view: <Sessions sessions={sessions} allSessions={allSessions} refreshData={refreshData} /> },
-    Tasks: { verboseName: 'Задачи', icon: 'fas fa-tasks', view: <Tasks tasks={tasks}/> },
-    AutoTasks: { verboseName: 'Авто-задачи', icon: 'fas fa-bolt', view: <Tasks tasks={autoTasks}/> },
-    AddSession: { verboseName: 'Добавить сессию', icon: 'fas fa-bolt', view: <AddSession /> },
+    Sessions: { verboseName: 'Мои аккаунты', icon: 'fas fa-home', view: <Sessions sessions={sessions} refreshData={refreshData} />, forAdmin: false },
+    AllSessions: { verboseName: 'Все аккаунты', icon: 'fas fa-home', view: <Sessions sessions={allSessions} refreshData={refreshData} />, forAdmin: true },
+    AddSession: { verboseName: 'Добавить сессию', icon: 'fas fa-bolt', view: <AddSession />, forAdmin: false },
+    Tasks: { verboseName: 'Задачи', icon: 'fas fa-tasks', view: <Tasks tasks={tasks}/>, forAdmin: false },
+    AutoTasks: { verboseName: 'Авто-задачи', icon: 'fas fa-bolt', view: <Tasks tasks={autoTasks}/>, forAdmin: false },
   };
 
   function Menu({ verboseName, name, icon }) {
@@ -111,14 +113,16 @@ const Panel = () => {
       <div className="sidebar d-flex flex-column p-3">
         <h4 className="mb-4">Telegram Bot Manager</h4>
         <ul className="nav flex-column">
+          {console.log(userData.role)}
           {
             Object.keys(menus).map(key => (
+              !menus[key].forAdmin || userData.role === 'admin' ?
               <Menu
                 key={key}
                 verboseName={menus[key].verboseName}
                 name={key}
                 icon={menus[key].icon}
-              />
+              /> : ''
             ))
           }
         </ul>

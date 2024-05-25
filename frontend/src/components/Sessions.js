@@ -1,12 +1,11 @@
 import React, { useMemo, useState } from 'react';
 import { useTable, useSortBy, useResizeColumns, useFilters, usePagination } from 'react-table';
 import Cookies from 'js-cookie';
-import { FaFilter, FaSync, FaList } from 'react-icons/fa'; 
+import { FaFilter, FaSync } from 'react-icons/fa'; 
 import '../css/Sessions.css'; 
 
-export default function Sessions({ sessions = [], allSessions = [], refreshData }) {
+export default function Sessions({ sessions = [], refreshData }) {
   const [filterStatus, setFilterStatus] = useState(null);
-  const [isAllSessions, setIsAllSessions] = useState(false);
   const [showFilters, setShowFilters] = useState(false); 
 
   const statuses = {
@@ -15,12 +14,10 @@ export default function Sessions({ sessions = [], allSessions = [], refreshData 
     2: ['Восстановлено', 'text-warning'],
   };
 
-  const currentSessions = isAllSessions ? allSessions : sessions;
-
   const filteredData = useMemo(() => {
-    if (!filterStatus) return currentSessions.slice().reverse();
-    return currentSessions.filter(session => session.ban === filterStatus).slice().reverse();
-  }, [currentSessions, filterStatus]);
+    if (!filterStatus) return sessions.slice().reverse();
+    return sessions.filter(session => session.ban === filterStatus).slice().reverse();
+  }, [sessions, filterStatus]);
 
   const data = useMemo(() => filteredData, [filteredData]);
 
@@ -78,26 +75,18 @@ export default function Sessions({ sessions = [], allSessions = [], refreshData 
     usePagination
   );
 
-  const total = currentSessions.length;
-  const working = currentSessions.filter(session => session.ban === 0).length;
-  const recovered = currentSessions.filter(session => session.ban === 2).length;
-  const banned = currentSessions.filter(session => session.ban === 1).length;
-  const proxy = currentSessions.filter(session => session.ban === 3).length;
+  const total = sessions.length;
+  const working = sessions.filter(session => session.ban === 0).length;
+  const recovered = sessions.filter(session => session.ban === 2).length;
+  const banned = sessions.filter(session => session.ban === 1).length;
+  const proxy = sessions.filter(session => session.ban === 3).length;
 
-  const isAdmin = Cookies.get('userData') == 'admin';
+  const isAdmin = Cookies.get('userData') === 'admin';
   return (
     <div className="content">
       <div className="header">
         <h4>Список сессий</h4>
         <div className="actions">
-          {isAdmin ? (
-            <button
-              className="btn btn-info sessions-btn"
-              onClick={() => setIsAllSessions(!isAllSessions)}
-            >
-              <FaList /> {isAllSessions ? 'Мои сессии' : 'Все сессии'}
-            </button>
-          ) : ""}
           <button
             className="btn btn-secondary refresh-btn"
             onClick={refreshData}
