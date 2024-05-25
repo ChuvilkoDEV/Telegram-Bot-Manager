@@ -29,14 +29,14 @@ export default function Sessions() {
   }, []);
 
   const statuses = {
-    0: ['Бан', 'text-danger'],
-    1: ['Работает', 'text-success'],
+    0: ['Работает', 'text-success'],
+    1: ['Бан', 'text-danger'],
     2: ['Восстановлено', 'text-warning'],
   };
 
   const filteredData = useMemo(() => {
-    if (!filterStatus) return sessions;
-    return sessions.filter(session => session.ban === filterStatus);
+    if (!filterStatus) return sessions.slice().reverse();
+    return sessions.filter(session => session.ban === filterStatus).slice().reverse();
   }, [sessions, filterStatus]);
 
   const data = useMemo(() => filteredData, [filteredData]);
@@ -90,15 +90,15 @@ export default function Sessions() {
       initialState: { pageIndex: 0, pageSize: 10 },
     },
     useFilters,
-    useSortBy,
+    useSortBy, 
     useResizeColumns,
     usePagination
   );
 
   const total = sessions.length;
-  const working = sessions.filter(session => session.ban === 1).length;
+  const working = sessions.filter(session => session.ban === 0).length;
   const recovered = sessions.filter(session => session.ban === 2).length;
-  const banned = sessions.filter(session => session.ban === 0).length;
+  const banned = sessions.filter(session => session.ban === 1).length;
   const proxy = sessions.filter(session => session.ban === 3).length;
 
   return (
@@ -107,8 +107,8 @@ export default function Sessions() {
         <h4>Список сессий</h4>
         <div className="filters">
           <button className="btn btn-primary" onClick={() => setFilterStatus(null)}>Всего: {total}</button>
-          <button className="btn btn-danger" onClick={() => setFilterStatus(0)}>Забанено: {banned}</button>
-          <button className="btn btn-success" onClick={() => setFilterStatus(1)}>Работают: {working}</button>
+          <button className="btn btn-success" onClick={() => setFilterStatus(0)}>Работают: {working}</button>
+          <button className="btn btn-danger" onClick={() => setFilterStatus(1)}>Забанено: {banned}</button>
           <button className="btn btn-warning" onClick={() => setFilterStatus(2)}>Восстановлено: {recovered}</button>
           <button className="btn btn-secondary" onClick={() => setFilterStatus(3)}>Прокси: {proxy}</button>
         </div>
@@ -120,10 +120,17 @@ export default function Sessions() {
             {headerGroups.map((headerGroup) => (
               <tr {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map((column, index) => {
-                  const { key, ...rest } = column.getHeaderProps();
+                  const { key, ...rest } = column.getHeaderProps(column.getSortByToggleProps()); // Добавлено для сортировки
                   return (
                     <th key={index} {...rest}>
                       {column.render('Header')}
+                      <span>
+                        {column.isSorted
+                          ? column.isSortedDesc
+                            ? ' 🔽'
+                            : ' 🔼'
+                          : ''}
+                      </span>
                     </th>
                   );
                 })}
