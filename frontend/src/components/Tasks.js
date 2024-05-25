@@ -3,6 +3,7 @@ import Cookies from 'js-cookie';
 import axios from 'axios';
 import { useTable, useSortBy, useResizeColumns, useFilters, usePagination } from 'react-table';
 import { Link } from 'react-router-dom';
+import '../css/Tasks.css'; // Импортируем CSS файл с нашим классом
 
 export default function Tasks() {
   const [tasks, setTasks] = useState([]);
@@ -11,6 +12,7 @@ export default function Tasks() {
     view: 'Просмотры',
     react: 'Реакции',
   }
+
   useEffect(() => {
     const fetchTasks = async () => {
       try {
@@ -55,6 +57,16 @@ export default function Tasks() {
         Cell: ({ row }) => {
           const { task_count_actions, task_count_actions_compite } = row.original;
           return `${task_count_actions_compite} / ${task_count_actions}`;
+        },
+      },
+      {
+        Header: 'Объекты задачи',
+        accessor: 'task_obj',
+        Cell: ({ value }) => {
+          const objects = JSON.parse(value);
+          return objects && objects.length > 0 ? (
+            <span className="emoji-small">{objects.join(' ')}</span>
+          ) : 'Нет объектов';
         },
       },
       {
@@ -113,7 +125,7 @@ export default function Tasks() {
     {
       columns,
       data,
-      initialState: { pageIndex: 0, pageSize: 50 },
+      initialState: { pageIndex: 0, pageSize: 50, sortBy: [{ id: 'dateAdd', desc: true }] }, // Сортировка по дате
     },
     useFilters,
     useSortBy,

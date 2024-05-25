@@ -1,0 +1,35 @@
+.emoji-small {
+    font-size: 10px;
+}
+
+.table-responsive {
+    overflow-x: auto;
+  }
+  
+  .fixed-table-container {
+    table-layout: fixed;
+    width: 100%;
+  }
+  
+  .fixed-table th,
+  .fixed-table td {
+    word-wrap: break-word; /* Для старых браузеров */
+    overflow-wrap: break-word; /* Для современных браузеров */
+    white-space: normal; /* Разрешить перенос строк */
+  }
+
+  
+.fixed-table th {
+    text-align: center; /* Горизонтальное выравнивание по центру */
+    vertical-align: middle; /* Вертикальное выравнивание по центру */
+  }
+  
+  .fixed-table td {
+    vertical-align: middle; /* Вертикальное выравнивание по центру */
+  }
+  
+  .emoji-small {
+    display: inline-block;
+    max-width: 100%;
+    overflow-wrap: break-word;
+  }

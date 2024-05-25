@@ -1,12 +1,13 @@
 import React, { useMemo, useState } from 'react';
 import { useTable, useSortBy, useResizeColumns, useFilters, usePagination } from 'react-table';
 import Cookies from 'js-cookie';
-import { FaFilter, FaSync, FaList } from 'react-icons/fa'; // Импорт иконок
+import { FaFilter, FaSync, FaList } from 'react-icons/fa'; 
+import '../css/Sessions.css'; 
 
 export default function Sessions({ sessions = [], allSessions = [], refreshData }) {
   const [filterStatus, setFilterStatus] = useState(null);
   const [isAllSessions, setIsAllSessions] = useState(false);
-  const [showFilters, setShowFilters] = useState(false); // Состояние для отображения фильтров
+  const [showFilters, setShowFilters] = useState(false); 
 
   const statuses = {
     0: ['Работает', 'text-success'],
@@ -125,7 +126,7 @@ export default function Sessions({ sessions = [], allSessions = [], refreshData 
 
       <div className="table-responsive fixed-table-container">
         <table className="table table-white table-striped fixed-table" {...getTableProps()}>
-          <thead>
+          <thead className="fixed-header">
             {headerGroups.map((headerGroup) => (
               <tr {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map((column, index) => {
