@@ -4,17 +4,11 @@ import Cookies from 'js-cookie';
 import '../css/AddTask.css';
 
 const reactionsList = [
-  { id: 'like', emoji: '👍' },
-  { id: 'fire', emoji: '🔥' },
-  { id: 'love', emoji: '🥰' },
-  { id: 'clap', emoji: '👏' },
-  { id: 'party', emoji: '🎉' },
-  { id: 'star', emoji: '🤩' },
-  { id: 'hundred', emoji: '💯' },
-  { id: 'lightning', emoji: '⚡' },
-  { id: 'trophy', emoji: '🏆' },
-  { id: 'devil', emoji: '😈' },
-  { id: 'cool', emoji: '🆒' },
+  '👍', '👎', '❤️', '🔥', '🥰', '👏', '😁', '🤔', '🤯', '😱', '🤬', '😢', '🎉', '🤩', '🤮', '💩', '🙏',
+  '👌', '🕊', '🤡', '🥱', '🥴', '😍', '🐳', '❤️🔥', '🌚', '🌭', '💯', '🤣', '⚡️', '🍌', '🏆', '💔', '🤨',
+  '😐', '🍓', '🍾', '💋', '🖕', '😈', '😴', '😭', '🤓', '👻', '👨💻', '👀', '🎃', '🙈', '😇', '😨', '🤝',
+  '✍️', '🤗', '🎅', '🎄', '☃️', '💅', '🤪', '🗿', '🆒', '💘', '🙉', '🦄', '😘', '💊', '🙊', '😎', '👾',
+  '🤷♂️', '🤷', '🤷♀️', '😡'
 ];
 
 const AddTask = () => {
@@ -52,7 +46,7 @@ const AddTask = () => {
       task_type: taskData.taskType,
       task_target: taskData.taskTarget,
       task_count_actions: taskData.taskCountActions,
-      task_obj: taskData.taskReactions,
+      task_reactions: taskData.taskReactions,
       task_time_out: taskData.taskTimeOut,
       task_channel_id: taskData.taskAuto ? taskData.taskChannelId : '',
       task_auto: taskData.taskAuto,
@@ -83,19 +77,21 @@ const AddTask = () => {
     }
   };
 
-  const handleReactionsChange = (reactionId) => {
+  const handleReactionsChange = (reaction) => {
     setTaskData((prevData) => ({
       ...prevData,
-      taskReactions: prevData.taskReactions.includes(reactionId)
-        ? prevData.taskReactions.filter((id) => id !== reactionId)
-        : [...prevData.taskReactions, reactionId],
+      taskReactions: prevData.taskReactions.includes(reaction)
+        ? prevData.taskReactions.filter((r) => r !== reaction)
+        : [...prevData.taskReactions, reaction],
     }));
   };
 
   const handleSelectAllReactions = () => {
     setTaskData((prevData) => ({
       ...prevData,
-      taskReactions: reactionsList.map((reaction) => reaction.id),
+      taskReactions: prevData.taskReactions.length === reactionsList.length
+        ? []
+        : reactionsList,
     }));
   };
 
@@ -121,24 +117,20 @@ const AddTask = () => {
         onClick={() => setShowReactionsList(!showReactionsList)}
       >
         {taskData.taskReactions.length > 0
-          ? taskData.taskReactions
-              .map((reactionId) =>
-                reactionsList.find((reaction) => reaction.id === reactionId).emoji
-              )
-              .join(' ')
+          ? taskData.taskReactions.join(' ')
           : 'Select Reactions'}
       </div>
       {showReactionsList && (
         <div className="add-task-reactions-popup">
           {reactionsList.map((reaction) => (
-            <div key={reaction.id} className="add-task-reaction-item">
-              <input
-                type="checkbox"
-                id={reaction.id}
-                checked={taskData.taskReactions.includes(reaction.id)}
-                onChange={() => handleReactionsChange(reaction.id)}
-              />
-              <label htmlFor={reaction.id}>{reaction.emoji}</label>
+            <div key={reaction} className="add-task-reaction-item">
+              <button
+                type="button"
+                className="add-task-reaction-button"
+                onClick={() => handleReactionsChange(reaction)}
+              >
+                {reaction}
+              </button>
             </div>
           ))}
           <button
@@ -146,7 +138,7 @@ const AddTask = () => {
             onClick={handleSelectAllReactions}
             className="add-task-btn add-task-btn-secondary"
           >
-            Select All
+            {taskData.taskReactions.length === reactionsList.length ? 'Deselect All' : 'Select All'}
           </button>
         </div>
       )}
