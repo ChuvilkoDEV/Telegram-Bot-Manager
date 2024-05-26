@@ -113,7 +113,6 @@ const Panel = () => {
       <div className="sidebar d-flex flex-column p-3">
         <h4 className="mb-4">Telegram Bot Manager</h4>
         <ul className="nav flex-column">
-          {console.log(userData.role)}
           {
             Object.keys(menus).map(key => (
               !menus[key].forAdmin || userData.role === 'admin' ?

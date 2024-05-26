@@ -1,12 +1,16 @@
 import React, { useMemo, useState } from 'react';
-import { useTable, useSortBy, useResizeColumns, useFilters, usePagination } from 'react-table';
+import { useTable, useSortBy, useResizeColumns, useFilters, usePagination, useRowSelect } from 'react-table';
 import Cookies from 'js-cookie';
-import { FaFilter, FaSync } from 'react-icons/fa'; 
-import '../css/Sessions.css'; 
+import { FaFilter, FaSync } from 'react-icons/fa';
+import axios from 'axios';
+import '../css/Sessions.css';
 
 export default function Sessions({ sessions = [], refreshData }) {
   const [filterStatus, setFilterStatus] = useState(null);
-  const [showFilters, setShowFilters] = useState(false); 
+  const [showFilters, setShowFilters] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [file, setFile] = useState(null);
+  const [accountsPerProxy, setAccountsPerProxy] = useState('');
 
   const statuses = {
     0: ['Работает', 'text-success'],
@@ -23,6 +27,24 @@ export default function Sessions({ sessions = [], refreshData }) {
 
   const columns = useMemo(
     () => [
+      {
+        id: 'selection',
+        Header: ({ getToggleAllPageRowsSelectedProps }) => (
+          <div className="checkbox-column-header">
+            <input type="checkbox" {...getToggleAllPageRowsSelectedProps()} />
+          </div>
+        ),
+        Cell: ({ row }) => (
+          <div className="checkbox-column">
+            <input type="checkbox" {...row.getToggleRowSelectedProps()} />
+          </div>
+        ),
+        width: 10,
+      },
+      {
+        Header: 'ID',
+        accessor: 'id',
+      },
       {
         Header: 'Номер телефона',
         accessor: 'tagName',
@@ -62,7 +84,7 @@ export default function Sessions({ sessions = [], refreshData }) {
     canNextPage,
     pageOptions,
     setPageSize,
-    state: { pageIndex, pageSize },
+    state: { pageIndex, pageSize, selectedRowIds },
   } = useTable(
     {
       columns,
@@ -72,7 +94,8 @@ export default function Sessions({ sessions = [], refreshData }) {
     useFilters,
     useSortBy,
     useResizeColumns,
-    usePagination
+    usePagination,
+    useRowSelect
   );
 
   const total = sessions.length;
@@ -82,11 +105,77 @@ export default function Sessions({ sessions = [], refreshData }) {
   const proxy = sessions.filter(session => session.ban === 3).length;
 
   const isAdmin = Cookies.get('userData') === 'admin';
+
+  const hasSelectedRows = Object.keys(selectedRowIds).length > 0;
+
+  const handleFileChange = (event) => {
+    setFile(event.target.files[0]);
+  };
+
+  const handleAccountsPerProxyChange = (event) => {
+    setAccountsPerProxy(event.target.value);
+  };
+
+  const handleSubmit = async () => {
+    if (!file || !accountsPerProxy) {
+      alert('Пожалуйста, выберите файл и укажите количество аккаунтов на одно прокси.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const content = e.target.result;
+      const proxies = content.split('\n').filter(proxy => proxy.trim() !== '');
+
+      const selectedSessions = Object.keys(selectedRowIds).map(id => sessions[id]);
+      const token = Cookies.get('token');
+
+      const proxyUsage = proxies.reduce((acc, proxy) => {
+        acc[proxy] = 0;
+        return acc;
+      }, {});
+
+      const promises = selectedSessions.map((session) => {
+        const availableProxy = proxies.find(proxy => proxyUsage[proxy] < accountsPerProxy);
+        if (!availableProxy) {
+          alert('Не хватает прокси для назначения аккаунтов.');
+          return Promise.resolve();
+        }
+
+        proxyUsage[availableProxy]++;
+
+        return axios.post(
+          'http://147.45.111.226:8000/api/editProxyAccount',
+          {
+            token,
+            session_id: session.id,
+            new_proxy: availableProxy
+          }
+        );
+      });
+
+      try {
+        await Promise.all(promises);
+        alert('Прокси успешно обновлены.');
+        setShowModal(false);
+        refreshData();
+      } catch (error) {
+        alert('Ошибка при обновлении прокси.');
+        console.error('Ошибка при обновлении прокси:', error);
+      }
+    };
+
+    reader.readAsText(file);
+  };
+
   return (
     <div className="content">
       <div className="header">
         <h4>Список сессий</h4>
         <div className="actions">
+          {hasSelectedRows && (
+            <button className="btn btn-primary" onClick={() => setShowModal(true)}>Изменить прокси</button>
+          )}
           <button
             className="btn btn-secondary refresh-btn"
             onClick={refreshData}
@@ -113,6 +202,29 @@ export default function Sessions({ sessions = [], refreshData }) {
         </div>
       </div>
 
+      {showModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <h4>Изменить прокси</h4>
+            <div className="form-group">
+              <label>Выберите файл (TXT):</label>
+              <input type="file" accept=".txt" onChange={handleFileChange} />
+            </div>
+            <div className="form-group">
+              <label>Количество аккаунтов на одно прокси:</label>
+              <input
+                type="number"
+                value={accountsPerProxy}
+                onChange={handleAccountsPerProxyChange}
+                min="1"
+              />
+            </div>
+            <button className="btn btn-primary" onClick={handleSubmit}>Сохранить</button>
+            <button className="btn btn-secondary" onClick={() => setShowModal(false)}>Отмена</button>
+          </div>
+        </div>
+      )}
+
       <div className="table-responsive fixed-table-container">
         <table className="table table-white table-striped fixed-table" {...getTableProps()}>
           <thead className="fixed-header">
@@ -121,7 +233,7 @@ export default function Sessions({ sessions = [], refreshData }) {
                 {headerGroup.headers.map((column, index) => {
                   const { key, ...rest } = column.getHeaderProps(column.getSortByToggleProps());
                   return (
-                    <th key={index} {...rest}>
+                    <th key={index} {...rest} style={{ width: column.width }}>
                       {column.render('Header')}
                       <span>
                         {column.isSorted
@@ -144,7 +256,7 @@ export default function Sessions({ sessions = [], refreshData }) {
                   {row.cells.map((cell, cellIndex) => {
                     const { key, ...rest } = cell.getCellProps();
                     return (
-                      <td key={cellIndex} {...rest}>
+                      <td key={cellIndex} {...rest} style={{ width: cell.column.width }}>
                         {cell.render('Cell')}
                       </td>
                     );
