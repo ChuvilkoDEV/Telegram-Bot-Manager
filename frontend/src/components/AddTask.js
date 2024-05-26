@@ -18,46 +18,53 @@ const reactionsList = [
 ];
 
 const AddTask = () => {
-  const [taskType, setTaskType] = useState('');
-  const [taskAuto, setTaskAuto] = useState(false);
-  const [taskTarget, setTaskTarget] = useState('');
-  const [group, setGroup] = useState('all');
-  const [taskCountActions, setTaskCountActions] = useState(500);
-  const [taskTimeOut, setTaskTimeOut] = useState(1);
-  const [countActionPerTimeout, setCountActionPerTimeout] = useState(500);
-  const [percentWave, setPercentWave] = useState(0);
-  const [percentMarkupSpread, setPercentMarkupSpread] = useState(0);
-  const [taskChannelId, setTaskChannelId] = useState('');
-  const [taskReactions, setTaskReactions] = useState([]);
+  const [taskData, setTaskData] = useState({
+    taskType: '',
+    taskAuto: false,
+    taskTarget: '',
+    group: 'all',
+    taskCountActions: 500,
+    taskTimeOut: 1,
+    countActionPerTimeout: 500,
+    percentWave: 0,
+    percentMarkupSpread: 0,
+    taskChannelId: '',
+    taskReactions: [],
+  });
   const [loading, setLoading] = useState(false);
   const [showReactionsList, setShowReactionsList] = useState(false);
 
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setTaskData((prevData) => ({
+      ...prevData,
+      [name]: type === 'checkbox' ? checked : value,
+    }));
+  };
+
   const handleAddTaskSubmit = async (e) => {
     e.preventDefault();
-
     setLoading(true);
     const token = Cookies.get('token');
 
     const data = {
       token,
-      task_type: taskType,
-      task_target: taskTarget,
-      task_count_actions: taskCountActions,
-      task_obj: taskReactions,
-      task_time_out: taskTimeOut,
-      task_channel_id: taskAuto ? taskChannelId : '',
-      task_auto: taskAuto,
-      count_action_per_timeout: countActionPerTimeout,
-      percetn_wave: percentWave,
-      percent_markup_spread: percentMarkupSpread,
-      group,
+      task_type: taskData.taskType,
+      task_target: taskData.taskTarget,
+      task_count_actions: taskData.taskCountActions,
+      task_obj: taskData.taskReactions,
+      task_time_out: taskData.taskTimeOut,
+      task_channel_id: taskData.taskAuto ? taskData.taskChannelId : '',
+      task_auto: taskData.taskAuto,
+      count_action_per_timeout: taskData.countActionPerTimeout,
+      percetn_wave: taskData.percentWave,
+      percent_markup_spread: taskData.percentMarkupSpread,
+      group: taskData.group,
     };
 
     try {
       const response = await axios.post('http://147.45.111.226:8000/api/addTask', data, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
       });
       console.log(response.data);
       alert('Task added successfully');
@@ -70,23 +77,81 @@ const AddTask = () => {
   };
 
   const handleTaskTypeChange = (e) => {
-    setTaskType(e.target.value);
+    handleChange(e);
     if (e.target.value === 'Подписки') {
-      setTaskAuto(false);
+      setTaskData((prevData) => ({ ...prevData, taskAuto: false }));
     }
   };
 
   const handleReactionsChange = (reactionId) => {
-    setTaskReactions((prevReactions) =>
-      prevReactions.includes(reactionId)
-        ? prevReactions.filter((id) => id !== reactionId)
-        : [...prevReactions, reactionId]
-    );
+    setTaskData((prevData) => ({
+      ...prevData,
+      taskReactions: prevData.taskReactions.includes(reactionId)
+        ? prevData.taskReactions.filter((id) => id !== reactionId)
+        : [...prevData.taskReactions, reactionId],
+    }));
   };
 
   const handleSelectAllReactions = () => {
-    setTaskReactions(reactionsList.map((reaction) => reaction.id));
+    setTaskData((prevData) => ({
+      ...prevData,
+      taskReactions: reactionsList.map((reaction) => reaction.id),
+    }));
   };
+
+  const renderInput = (label, name, type = 'text', additionalProps = {}) => (
+    <div className="form-group">
+      <label>{label}</label>
+      <input
+        type={type}
+        name={name}
+        value={taskData[name]}
+        onChange={handleChange}
+        className="form-control"
+        {...additionalProps}
+      />
+    </div>
+  );
+
+  const renderReactionsField = () => (
+    <div className="form-group">
+      <label>Reactions</label>
+      <div
+        className="reactions-field"
+        onClick={() => setShowReactionsList(!showReactionsList)}
+      >
+        {taskData.taskReactions.length > 0
+          ? taskData.taskReactions
+              .map((reactionId) =>
+                reactionsList.find((reaction) => reaction.id === reactionId).emoji
+              )
+              .join(' ')
+          : 'Select Reactions'}
+      </div>
+      {showReactionsList && (
+        <div className="reactions-popup">
+          {reactionsList.map((reaction) => (
+            <div key={reaction.id} className="reaction-item">
+              <input
+                type="checkbox"
+                id={reaction.id}
+                checked={taskData.taskReactions.includes(reaction.id)}
+                onChange={() => handleReactionsChange(reaction.id)}
+              />
+              <label htmlFor={reaction.id}>{reaction.emoji}</label>
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={handleSelectAllReactions}
+            className="btn btn-secondary"
+          >
+            Select All
+          </button>
+        </div>
+      )}
+    </div>
+  );
 
   return (
     <div className="content">
@@ -97,7 +162,8 @@ const AddTask = () => {
             <div className="form-group">
               <label>Type</label>
               <select
-                value={taskType}
+                name="taskType"
+                value={taskData.taskType}
                 onChange={handleTaskTypeChange}
                 className="form-control"
               >
@@ -107,130 +173,29 @@ const AddTask = () => {
                 <option value="Просмотры">Views</option>
               </select>
             </div>
-            {taskType === 'Реакции' && (
-              <div className="form-group">
-                <label>Reactions</label>
-                <div
-                  className="reactions-field"
-                  onClick={() => setShowReactionsList(!showReactionsList)}
-                >
-                  {taskReactions.length > 0
-                    ? taskReactions.map((reactionId) =>
-                      reactionsList.find((reaction) => reaction.id === reactionId).emoji
-                    ).join(' ')
-                    : 'Select Reactions'}
-                </div>
-                {showReactionsList && (
-                  <div className="reactions-popup">
-                    {reactionsList.map((reaction) => (
-                      <div key={reaction.id} className="reaction-item">
-                        <input
-                          type="checkbox"
-                          id={reaction.id}
-                          checked={taskReactions.includes(reaction.id)}
-                          onChange={() => handleReactionsChange(reaction.id)}
-                        />
-                        <label htmlFor={reaction.id}>{reaction.emoji}</label>
-                      </div>
-                    ))}
-                    <button
-                      type="button"
-                      onClick={handleSelectAllReactions}
-                      className="btn btn-secondary"
-                    >
-                      Select All
-                    </button>
-                  </div>
-                )}
-              </div>
-            )}
-            {taskType !== 'Подписки' && (
+            {taskData.taskType === 'Реакции' && renderReactionsField()}
+            {taskData.taskType !== 'Подписки' && (
               <div className="form-group-checkbox">
                 <label>
                   <input
                     type="checkbox"
-                    checked={taskAuto}
-                    onChange={(e) => setTaskAuto(e.target.checked)}
+                    name="taskAuto"
+                    checked={taskData.taskAuto}
+                    onChange={handleChange}
                     className="form-control-checkbox"
                   />
                   Auto
                 </label>
-                {taskAuto && (
-                  <input
-                    type="text"
-                    value={taskChannelId}
-                    onChange={(e) => setTaskChannelId(e.target.value)}
-                    className="form-control channel-id-input"
-                    placeholder="Channel ID"
-                  />
-                )}
+                {taskData.taskAuto && renderInput('Channel ID', 'taskChannelId')}
               </div>
             )}
-            <div className="form-group">
-              <label>Target</label>
-              <input
-                type="text"
-                value={taskTarget}
-                onChange={(e) => setTaskTarget(e.target.value)}
-                className="form-control"
-              />
-            </div>
-            <div className="form-group">
-              <label>Group</label>
-              <input
-                type="text"
-                value={group}
-                onChange={(e) => setGroup(e.target.value)}
-                className="form-control"
-              />
-            </div>
-            <div className="form-group">
-              <label>Action Count</label>
-              <input
-                type="number"
-                min="1"
-                max="3635"
-                value={taskCountActions}
-                onChange={(e) => setTaskCountActions(e.target.value)}
-                className="form-control"
-              />
-            </div>
-            <div className="form-group">
-              <label>Time Out</label>
-              <input
-                type="number"
-                value={taskTimeOut}
-                onChange={(e) => setTaskTimeOut(e.target.value)}
-                className="form-control"
-              />
-            </div>
-            <div className="form-group">
-              <label>Count per Timeout</label>
-              <input
-                type="number"
-                value={countActionPerTimeout}
-                onChange={(e) => setCountActionPerTimeout(e.target.value)}
-                className="form-control"
-              />
-            </div>
-            <div className="form-group">
-              <label>Wave %</label>
-              <input
-                type="number"
-                value={percentWave}
-                onChange={(e) => setPercentWave(e.target.value)}
-                className="form-control"
-              />
-            </div>
-            <div className="form-group">
-              <label>Markup Spread %</label>
-              <input
-                type="number"
-                value={percentMarkupSpread}
-                onChange={(e) => setPercentMarkupSpread(e.target.value)}
-                className="form-control"
-              />
-            </div>
+            {renderInput('Target', 'taskTarget')}
+            {renderInput('Group', 'group')}
+            {renderInput('Action Count', 'taskCountActions', 'number', { min: 1, max: 3635 })}
+            {renderInput('Time Out', 'taskTimeOut', 'number')}
+            {renderInput('Count per Timeout', 'countActionPerTimeout', 'number')}
+            {renderInput('Wave %', 'percentWave', 'number')}
+            {renderInput('Markup Spread %', 'percentMarkupSpread', 'number')}
             <button type="submit" className="btn btn-primary" disabled={loading}>
               {loading ? 'Submitting...' : 'Submit'}
             </button>

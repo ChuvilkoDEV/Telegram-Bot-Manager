@@ -19,7 +19,6 @@ const Panel = () => {
 
   const requestToServer = async ({ link, handler }) => {
     const token = Cookies.get('token');
-    console.log(link);
     try {
       const response = await axios.post(link, { token });
       handler(response);
