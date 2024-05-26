@@ -36,43 +36,43 @@ const Login = () => {
   };
 
   return (
-    <div className="login-container-custom">
-      <div className="login-form-custom">
+    <div className="login-container">
+      <div className="login-form">
         <h2>Войдите в аккаунт</h2>
-        <div className="nav-buttons-custom">
-          <Link to="/login" className="nav-button-custom active">Вход</Link>
-          <Link to="/register" className="nav-button-custom">Регистрация</Link>
+        <div className="nav-buttons">
+          <Link to="/login" className="nav-button active">Вход</Link>
+          <Link to="/register" className="nav-button">Регистрация</Link>
         </div>
         {error && <div className="alert alert-danger" role="alert">{error}</div>}
         <form onSubmit={handleSubmit}>
-          <div className="form-group-custom">
+          <div className="form-group">
             <input
               type="email"
-              className="form-control-custom"
+              className="form-control"
               placeholder="email@domain.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
-          <div className="form-group-custom">
+          <div className="form-group">
             <input
               type="password"
-              className="form-control-custom"
+              className="form-control"
               placeholder="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <button type="submit" className="btn-primary-custom">
+          <button type="submit" className="btn-primary">
             Войти
           </button>
         </form>
-        <div className="additional-links-custom">
-          <Link to="/forgot-password" className="forgot-password-link-custom">
+        <div className="additional-links">
+          <Link to="/forgot-password" className="forgot-password-link">
             Не помню пароль
           </Link>
         </div>
-        <p className="terms-custom">
+        <p className="terms">
           Нажимая "Войти", вы соглашаетесь с нашими <a href="/terms">Условиями обслуживания</a> и <a href="/privacy">Политикой конфиденциальности</a>.
         </p>
       </div>

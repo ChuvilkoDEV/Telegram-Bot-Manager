@@ -1,5 +1,5 @@
 /* AddTask.css */
-.form-container {
+.add-task-form-container {
     padding: 20px;
     background-color: #f9f9f9;
     border-radius: 8px;
@@ -7,18 +7,18 @@
     margin: auto;
 }
 
-.form-group {
+.add-task-form-group {
     margin-bottom: 20px;
 }
 
-.form-group label {
+.add-task-form-group label {
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
 }
 
-.form-group input,
-.form-group select {
+.add-task-form-group input,
+.add-task-form-group select {
     width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
@@ -26,28 +26,28 @@
     box-sizing: border-box;
 }
 
-.form-group-checkbox {
+.add-task-form-group-checkbox {
     display: flex;
     align-items: center;
     margin-bottom: 20px;
 }
 
-.form-group-checkbox label {
+.add-task-form-group-checkbox label {
     display: flex;
     align-items: center;
 }
 
-.form-group-checkbox input[type="checkbox"] {
+.add-task-form-group-checkbox input[type="checkbox"] {
     width: auto;
     margin-right: 10px;
 }
 
-.channel-id-input {
+.add-task-channel-id-input {
     margin-left: 10px;
     flex: 1;
 }
 
-.reactions-field {
+.add-task-reactions-field {
     width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
@@ -57,7 +57,7 @@
     background-color: #fff;
 }
 
-.reactions-popup {
+.add-task-reactions-popup {
     position: absolute;
     background-color: #fff;
     border: 1px solid #ccc;
@@ -68,16 +68,16 @@
     z-index: 1000;
 }
 
-.reaction-item {
+.add-task-reaction-item {
     display: flex;
     align-items: center;
 }
 
-.reaction-item input {
+.add-task-reaction-item input {
     margin-right: 5px;
 }
 
-.btn {
+.add-task-btn {
     padding: 10px 20px;
     background-color: #007bff;
     color: #fff;
@@ -86,7 +86,11 @@
     cursor: pointer;
 }
 
-.btn:disabled {
+.add-task-btn:disabled {
     background-color: #e0e0e0;
     cursor: not-allowed;
+}
+
+.add-task-btn-secondary {
+    background-color: #6c757d;
 }

@@ -100,24 +100,24 @@ const AddTask = () => {
   };
 
   const renderInput = (label, name, type = 'text', additionalProps = {}) => (
-    <div className="form-group">
+    <div className="add-task-form-group">
       <label>{label}</label>
       <input
         type={type}
         name={name}
         value={taskData[name]}
         onChange={handleChange}
-        className="form-control"
+        className="add-task-form-control"
         {...additionalProps}
       />
     </div>
   );
 
   const renderReactionsField = () => (
-    <div className="form-group">
+    <div className="add-task-form-group">
       <label>Reactions</label>
       <div
-        className="reactions-field"
+        className="add-task-reactions-field"
         onClick={() => setShowReactionsList(!showReactionsList)}
       >
         {taskData.taskReactions.length > 0
@@ -129,9 +129,9 @@ const AddTask = () => {
           : 'Select Reactions'}
       </div>
       {showReactionsList && (
-        <div className="reactions-popup">
+        <div className="add-task-reactions-popup">
           {reactionsList.map((reaction) => (
-            <div key={reaction.id} className="reaction-item">
+            <div key={reaction.id} className="add-task-reaction-item">
               <input
                 type="checkbox"
                 id={reaction.id}
@@ -144,7 +144,7 @@ const AddTask = () => {
           <button
             type="button"
             onClick={handleSelectAllReactions}
-            className="btn btn-secondary"
+            className="add-task-btn add-task-btn-secondary"
           >
             Select All
           </button>
@@ -155,17 +155,17 @@ const AddTask = () => {
 
   return (
     <div className="content">
-      <div className="form-container">
-        <div className="form-section">
+      <div className="add-task-form-container">
+        <div className="add-task-form-section">
           <h2>Add Task</h2>
           <form onSubmit={handleAddTaskSubmit}>
-            <div className="form-group">
+            <div className="add-task-form-group">
               <label>Type</label>
               <select
                 name="taskType"
                 value={taskData.taskType}
                 onChange={handleTaskTypeChange}
-                className="form-control"
+                className="add-task-form-control"
               >
                 <option value="">Select Type</option>
                 <option value="Реакции">Reactions</option>
@@ -175,14 +175,14 @@ const AddTask = () => {
             </div>
             {taskData.taskType === 'Реакции' && renderReactionsField()}
             {taskData.taskType !== 'Подписки' && (
-              <div className="form-group-checkbox">
+              <div className="add-task-form-group-checkbox">
                 <label>
                   <input
                     type="checkbox"
                     name="taskAuto"
                     checked={taskData.taskAuto}
                     onChange={handleChange}
-                    className="form-control-checkbox"
+                    className="add-task-form-control-checkbox"
                   />
                   Auto
                 </label>
@@ -196,7 +196,7 @@ const AddTask = () => {
             {renderInput('Count per Timeout', 'countActionPerTimeout', 'number')}
             {renderInput('Wave %', 'percentWave', 'number')}
             {renderInput('Markup Spread %', 'percentMarkupSpread', 'number')}
-            <button type="submit" className="btn btn-primary" disabled={loading}>
+            <button type="submit" className="add-task-btn add-task-btn-primary" disabled={loading}>
               {loading ? 'Submitting...' : 'Submit'}
             </button>
           </form>

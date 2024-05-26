@@ -1,4 +1,5 @@
-.login-container-custom {
+/* Login.css */
+.login-container {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -7,14 +8,14 @@
   background-color: #fff;
 }
 
-.nav-buttons-custom {
+.nav-buttons {
   display: flex;
   margin-bottom: 20px;
   width: 100%;
   max-width: 400px;
 }
 
-.nav-button-custom {
+.nav-button {
   flex: 1;
   text-align: center;
   padding: 10px 20px;
@@ -25,26 +26,26 @@
   border-radius: 4px;
 }
 
-.nav-button-custom.active {
+.nav-button.active {
   background-color: #000;
   color: #fff;
 }
 
-.login-form-custom {
+.login-form {
   text-align: center;
   width: 100%;
   max-width: 400px;
 }
 
-.login-form-custom h2 {
+.login-form h2 {
   margin-bottom: 20px;
 }
 
-.form-group-custom {
+.form-group {
   margin-bottom: 20px;
 }
 
-.form-control-custom {
+.form-control {
   width: 100%;
   padding: 10px;
   font-size: 16px;
@@ -52,7 +53,7 @@
   border-radius: 4px;
 }
 
-.btn-primary-custom {
+.btn-primary {
   width: 100%;
   background-color: #000;
   border: none;
@@ -63,34 +64,34 @@
   margin-bottom: 10px;
 }
 
-.btn-primary-custom:hover {
+.btn-primary:hover {
   background-color: #333;
 }
 
-.additional-links-custom {
+.additional-links {
   margin-top: 10px;
 }
 
-.forgot-password-link-custom {
+.forgot-password-link {
   color: #000;
   text-decoration: underline;
 }
 
-.forgot-password-link-custom:hover {
+.forgot-password-link:hover {
   text-decoration: none;
 }
 
-.terms-custom {
+.terms {
   margin-top: 20px;
   color: #666;
   font-size: 14px;
 }
 
-.terms-custom a {
+.terms a {
   color: #000;
   text-decoration: underline;
 }
 
-.terms-custom a:hover {
+.terms a:hover {
   text-decoration: none;
 }
