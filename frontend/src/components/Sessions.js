@@ -19,7 +19,7 @@ export default function Sessions({ sessions = [], refreshData }) {
   };
 
   const filteredData = useMemo(() => {
-    if (!filterStatus) return sessions.slice().reverse();
+    if (filterStatus === null) return sessions.slice().reverse();
     return sessions.filter(session => session.ban === filterStatus).slice().reverse();
   }, [sessions, filterStatus]);
 
@@ -172,24 +172,26 @@ export default function Sessions({ sessions = [], refreshData }) {
         <h4>Список сессий</h4>
         <div className="actions">
           {hasSelectedRows && (
-            <button className="btn btn-primary" onClick={() => setShowModal(true)}>Изменить прокси</button>
+            <button className="btn btn-primary change-proxy-btn" onClick={() => setShowModal(true)}>Изменить прокси</button>
           )}
           <button
             className="btn btn-secondary refresh-btn"
             onClick={refreshData}
+            aria-label="Обновить данные"
           >
-            <FaSync /> Обновить данные
+            <FaSync />
           </button>
           <div className="filter-icon">
             <button
               className="btn btn-primary filter-btn"
               onClick={() => setShowFilters(!showFilters)}
+              aria-label="Фильтры"
             >
-              <FaFilter /> Фильтры
+              <FaFilter />
             </button>
             {showFilters && (
               <div className="filter-popup">
-                <button className="btn btn-primary filter-option-btn" onClick={() => setFilterStatus(null)}>Всего: {total}</button>
+                <button className="btn filter-option-btn filter-all" onClick={() => setFilterStatus(null)}>Всего: {total}</button>
                 <button className="btn btn-success filter-option-btn" onClick={() => setFilterStatus(0)}>Работают: {working}</button>
                 <button className="btn btn-danger filter-option-btn" onClick={() => setFilterStatus(1)}>Забанено: {banned}</button>
                 <button className="btn btn-warning filter-option-btn" onClick={() => setFilterStatus(2)}>Восстановлено: {recovered}</button>
@@ -267,26 +269,29 @@ export default function Sessions({ sessions = [], refreshData }) {
         <div className="pagination-container">
           <div className="pagination">
             <button onClick={() => previousPage()} disabled={!canPreviousPage}>
-              Предыдущая
-            </button>{' '}
-            <button onClick={() => nextPage()} disabled={!canNextPage}>
-              Следующая
-            </button>{' '}
+              {'<'}
+            </button>
             <span>
               Страница{' '}
               <strong>
                 {pageIndex + 1} из {pageOptions.length}
-              </strong>{' '}
+              </strong>
             </span>
+            <button onClick={() => nextPage()} disabled={!canNextPage}>
+              {'>'}
+            </button>
           </div>
           <div className="page-size-options">
-            <span>Показать </span>
-            {[10, 25, 50, 100, total].map(size => (
-              <button key={size} onClick={() => setPageSize(size)} className="btn btn-link">
-                {size === total ? 'Все' : size}
+            <span>Показывать по:</span>
+            {[50, 100, 200].map((size) => (
+              <button
+                key={size}
+                className={pageSize === size ? 'active' : ''}
+                onClick={() => setPageSize(size)}
+              >
+                {size}
               </button>
             ))}
-            <span>строк</span>
           </div>
         </div>
       </div>
