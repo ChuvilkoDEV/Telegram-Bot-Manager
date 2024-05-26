@@ -104,8 +104,6 @@ export default function Sessions({ sessions = [], refreshData }) {
   const banned = sessions.filter(session => session.ban === 1).length;
   const proxy = sessions.filter(session => session.ban === 3).length;
 
-  const isAdmin = Cookies.get('userData') === 'admin';
-
   const hasSelectedRows = Object.keys(selectedRowIds).length > 0;
 
   const handleFileChange = (event) => {

@@ -11,73 +11,64 @@ import { Link } from 'react-router-dom';
 const Panel = () => {
   const { user, logout } = useContext(UserContext);
   const [currentMenu, setCurrentMenu] = useState('Sessions');
-  const [userStatus, setUserStatus] = useState(null);
-  // const [userRole, setUserRole] = useState(null);
   const [userData, setUserData] = useState(null);
   const [allSessions, setAllSessions] = useState([]);
   const [sessions, setSessions] = useState([]);
   const [tasks, setTasks] = useState([]);
   const [autoTasks, setAutoTasks] = useState([]);
 
-  const fetchData = async () => {
+  const requestToServer = async ({ link, handler }) => {
     const token = Cookies.get('token');
+    console.log(link);
     try {
-      const response = await axios.post(
-        'http://147.45.111.226:8000/api/authWithToken',
-        { token }
-      );
-      setUserData(response.data);
-      Cookies.set('userData', response.data.role);
-      setUserStatus(response.data.status);
+      const response = await axios.post(link, { token });
+      handler(response);
     } catch (error) {
-      setUserStatus('fail');
       console.error('Ошибка при получении данных:', error);
     }
-    try {
-      const response = await axios.post(
-        'http://147.45.111.226:8000/api/getMySessions',
-        { token }
-      );
-      if (response.data.status !== 'ok')
-        throw new Error('Что-то пошло не так...');
+  };
 
-      setSessions(response.data.sessions);
-    } catch (err) {
-      console.error(err);
-    }
-    try {
-      const response = await axios.post(
-        'http://147.45.111.226:8000/api/getAllSessions',
-        { token }
-      );
-      if (response.data.status !== 'ok')
-        throw new Error('Что-то пошло не так...');
-      setAllSessions(response.data.sessions);
-    } catch (err) {
-      console.error(err);
-    }
-    try {
-      const response = await axios.post(
-        'http://147.45.111.226:8000/api/getTasks',
-        { token }
-      );
-      if (response.data.status !== 'ok')
-        throw new Error('Что-то пошло не так...');
-      setTasks(response.data.data); 
-    } catch (err) {
-      console.error(err);
-    }
-    try {
-      const response = await axios.post(
-        'http://147.45.111.226:8000/api/getAutoTasks',
-        { token }
-      );
-      if (response.data.status !== 'ok')
-        throw new Error('Что-то пошло не так...');
-      setAutoTasks(response.data.data); 
-    } catch (err) {
-      console.error(err);
-    }
+  const handleUserData = (response) => {
+    setUserData(response.data);
+  };
+
+  const handleSessions = (response) => {
+    setSessions(response.data.sessions);
+  };
+
+  const handleAllSessions = (response) => {
+    setAllSessions(response.data.sessions);
+  };
+
+  const handleTasks = (response) => {
+    setTasks(response.data.data);
+  };
+
+  const handleAutoTasks = (response) => {
+    setAutoTasks(response.data.data);
+  };
+
+  const fetchData = async () => {
+    requestToServer({
+      link: 'http://147.45.111.226:8000/api/authWithToken',
+      handler: handleUserData,
+    });
+    requestToServer({
+      link: 'http://147.45.111.226:8000/api/getMySessions',
+      handler: handleSessions,
+    });
+    requestToServer({
+      link: 'http://147.45.111.226:8000/api/getAllSessions',
+      handler: handleAllSessions,
+    });
+    requestToServer({
+      link: 'http://147.45.111.226:8000/api/getTasks',
+      handler: handleTasks,
+    });
+    requestToServer({
+      link: 'http://147.45.111.226:8000/api/getAutoTasks',
+      handler: handleAutoTasks,
+    });
   };
 
   useEffect(() => {
@@ -92,8 +83,8 @@ const Panel = () => {
     Sessions: { verboseName: 'Мои аккаунты', icon: 'fas fa-home', view: <Sessions sessions={sessions} refreshData={refreshData} />, forAdmin: false },
     AllSessions: { verboseName: 'Все аккаунты', icon: 'fas fa-home', view: <Sessions sessions={allSessions} refreshData={refreshData} />, forAdmin: true },
     AddSession: { verboseName: 'Добавить сессию', icon: 'fas fa-bolt', view: <AddSession />, forAdmin: false },
-    Tasks: { verboseName: 'Задачи', icon: 'fas fa-tasks', view: <Tasks tasks={tasks}/>, forAdmin: false },
-    AutoTasks: { verboseName: 'Авто-задачи', icon: 'fas fa-bolt', view: <Tasks tasks={autoTasks}/>, forAdmin: false },
+    Tasks: { verboseName: 'Задачи', icon: 'fas fa-tasks', view: <Tasks tasks={tasks} />, forAdmin: false },
+    AutoTasks: { verboseName: 'Авто-задачи', icon: 'fas fa-bolt', view: <Tasks tasks={autoTasks} />, forAdmin: false },
     AddTask: { verboseName: 'Добавить задачу', icon: 'fas fa-bolt', view: <AddTask />, forAdmin: false },
   };
 
@@ -115,17 +106,11 @@ const Panel = () => {
       <div className="sidebar d-flex flex-column p-3">
         <h4 className="mb-4">Telegram Bot Manager</h4>
         <ul className="nav flex-column">
-          {
-            Object.keys(menus).map(key => (
-              !menus[key].forAdmin || userData.role === 'admin' ?
-              <Menu
-                key={key}
-                verboseName={menus[key].verboseName}
-                name={key}
-                icon={menus[key].icon}
-              /> : ''
-            ))
-          }
+          {Object.keys(menus).map((key) => (
+            !menus[key].forAdmin || userData?.role === 'admin' ? (
+              <Menu key={key} verboseName={menus[key].verboseName} name={key} icon={menus[key].icon} />
+            ) : null
+          ))}
         </ul>
         <div className="mt-auto">
           <div className="user-info">
@@ -139,12 +124,14 @@ const Panel = () => {
 
   return (
     <div>
-      {userStatus === 'ok' ? (
+      {userData === null ? (
+        <p>Loading...</p>
+      ) : userData.status === 'ok' ? (
         <div className="wrapper">
           <Sidebar />
           {menus[currentMenu].view}
         </div>
-      ) : userStatus === 'fail' ? (
+      ) : (
         <div className="alert-container">
           <div className="row justify-content-center">
             <div className="col-md-6">
@@ -156,8 +143,6 @@ const Panel = () => {
             </div>
           </div>
         </div>
-      ) : (
-        <p>Loading...</p>
       )}
     </div>
   );
