@@ -1,6 +1,8 @@
-import React, { useMemo } from 'react';
-import { useTable, useSortBy, useResizeColumns, useFilters, usePagination } from 'react-table';
+import React, { useMemo, useState } from 'react';
+import { useTable, useSortBy, useResizeColumns, useFilters, usePagination, useRowSelect } from 'react-table';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+import Cookies from 'js-cookie';
 import '../css/Tasks.css'; 
 
 export default function Tasks({ tasks }) {
@@ -14,6 +16,20 @@ export default function Tasks({ tasks }) {
 
   const columns = useMemo(
     () => [
+      {
+        id: 'selection',
+        Header: ({ getToggleAllPageRowsSelectedProps }) => (
+          <div className="checkbox-column-header">
+            <input type="checkbox" {...getToggleAllPageRowsSelectedProps()} />
+          </div>
+        ),
+        Cell: ({ row }) => (
+          <div className="checkbox-column">
+            <input type="checkbox" {...row.getToggleRowSelectedProps()} />
+          </div>
+        ),
+        width: 10,
+      },
       {
         Header: 'Тип задачи',
         accessor: 'task_type',
@@ -97,7 +113,7 @@ export default function Tasks({ tasks }) {
     canNextPage,
     pageOptions,
     setPageSize,
-    state: { pageIndex, pageSize },
+    state: { pageIndex, pageSize, selectedRowIds },
   } = useTable(
     {
       columns,
@@ -107,13 +123,40 @@ export default function Tasks({ tasks }) {
     useFilters,
     useSortBy,
     useResizeColumns,
-    usePagination
+    usePagination,
+    useRowSelect
   );
+
+  const hasSelectedRows = Object.keys(selectedRowIds).length > 0;
+
+  const handleAutoTask = async () => {
+    const selectedTasks = Object.keys(selectedRowIds).map(id => tasks[id]);
+    const token = Cookies.get('token');
+
+    try {
+      const promises = selectedTasks.map((task) => 
+        axios.post('http://147.45.111.226:8000/api/switchAuto', {
+          token,
+          auto_task_id: task.id
+        })
+      );
+      await Promise.all(promises);
+      alert('Авто-задачи успешно обновлены.');
+    } catch (error) {
+      alert('Ошибка при обновлении авто-задач.');
+      console.error('Ошибка при обновлении авто-задач:', error);
+    }
+  };
 
   return (
     <div className="content">
       <div className="header">
         <h4>Список задач</h4>
+        <div className="actions">
+          {hasSelectedRows && (
+            <button className="btn btn-primary" onClick={handleAutoTask}>Сменить на авто-задачу</button>
+          )}
+        </div>
       </div>
 
       <div className="table-responsive fixed-table-container">
