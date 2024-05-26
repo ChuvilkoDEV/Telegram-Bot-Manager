@@ -5,6 +5,7 @@ import { UserContext } from './UserContext';
 import Sessions from './Sessions';
 import Tasks from './Tasks';
 import AddSession from './AddSession';
+import AddTask from './AddTask';
 import { Link } from 'react-router-dom';
 
 const Panel = () => {
@@ -93,6 +94,7 @@ const Panel = () => {
     AddSession: { verboseName: 'Добавить сессию', icon: 'fas fa-bolt', view: <AddSession />, forAdmin: false },
     Tasks: { verboseName: 'Задачи', icon: 'fas fa-tasks', view: <Tasks tasks={tasks}/>, forAdmin: false },
     AutoTasks: { verboseName: 'Авто-задачи', icon: 'fas fa-bolt', view: <Tasks tasks={autoTasks}/>, forAdmin: false },
+    AddTask: { verboseName: 'Добавить задачу', icon: 'fas fa-bolt', view: <AddTask />, forAdmin: false },
   };
 
   function Menu({ verboseName, name, icon }) {
