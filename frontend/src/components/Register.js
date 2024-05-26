@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
-import '../css/Register.css'; // Обновлено: используем уникальный CSS-файл
+import '../css/Register.css'; 
 
 const Register = () => {
-  const [username, setUsername] = useState('');
+  const [name, setName] = useState(''); 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -19,12 +19,12 @@ const Register = () => {
     }
 
     try {
-      const response = await axios.post('http://147.45.111.226:8000/api/register/', {
-        username,
+      const response = await axios.post('http://147.45.111.226:8000/api/registration/', {
+        name, 
         email,
         password,
       });
-      if (response.data.status !== 'success') {
+      if (response.data.status !== 'ok') {
         throw new Error(response.data.message || 'Ошибка при регистрации.');
       }
       navigate('/login');
@@ -49,8 +49,8 @@ const Register = () => {
               type="text"
               className="form-control-custom"
               placeholder="Имя пользователя"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              value={name} 
+              onChange={(e) => setName(e.target.value)} 
               required
             />
           </div>
