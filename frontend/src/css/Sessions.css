@@ -84,6 +84,10 @@
 .fixed-table th,
 .fixed-table td {
     white-space: nowrap;
+    text-align: center;
+    /* Center align text horizontally */
+    vertical-align: middle;
+    /* Center align text vertically */
 }
 
 .fixed-table th {
