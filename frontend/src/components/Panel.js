@@ -10,13 +10,14 @@ import { Link } from 'react-router-dom';
 
 const Panel = () => {
   const { user, logout } = useContext(UserContext);
-  const [currentMenu, setCurrentMenu] = useState('Sessions');
-  const [userData, setUserData] = useState(null);
-  const [allSessions, setAllSessions] = useState([]);
-  const [sessions, setSessions] = useState([]);
-  const [tasks, setTasks] = useState([]);
-  const [autoTasks, setAutoTasks] = useState([]);
+  const [currentMenu, setCurrentMenu] = useState('Sessions'); // Текущее выбранное меню
+  const [userData, setUserData] = useState(null); // Данные пользователя
+  const [sessions, setSessions] = useState([]); // Сессии текущего пользователя
+  const [allSessions, setAllSessions] = useState([]); // Все сессии
+  const [tasks, setTasks] = useState([]); // Задачи пользователя
+  const [autoTasks, setAutoTasks] = useState([]); // Автоматические задачи
 
+  // Функция для отправки запросов на сервер
   const requestToServer = async ({ link, handler }) => {
     const token = Cookies.get('token');
     try {
@@ -27,6 +28,7 @@ const Panel = () => {
     }
   };
 
+  // Обработчики для различных типов данных
   const handleUserData = (response) => {
     setUserData(response.data);
   };
@@ -47,6 +49,7 @@ const Panel = () => {
     setAutoTasks(response.data.data);
   };
 
+  // Функция для получения данных с сервера
   const fetchData = async () => {
     requestToServer({
       link: 'http://147.45.111.226:8000/api/authWithToken',
@@ -70,14 +73,17 @@ const Panel = () => {
     });
   };
 
+  // Использование хука useEffect для первоначальной загрузки данных
   useEffect(() => {
     fetchData();
   }, []);
 
+  // Функция для обновления данных
   const refreshData = () => {
     fetchData();
   };
 
+  // Конфигурация меню
   const menus = {
     Sessions: { verboseName: 'Мои аккаунты', icon: 'fas fa-home', view: <Sessions sessions={sessions} refreshData={refreshData} />, forAdmin: false },
     AllSessions: { verboseName: 'Все аккаунты', icon: 'fas fa-home', view: <Sessions sessions={allSessions} refreshData={refreshData} />, forAdmin: true },
@@ -87,6 +93,7 @@ const Panel = () => {
     AddTask: { verboseName: 'Добавить задачу', icon: 'fas fa-bolt', view: <AddTask />, forAdmin: false },
   };
 
+  // Компонент меню
   function Menu({ verboseName, name, icon }) {
     return (
       <li className="nav-item">
@@ -100,6 +107,7 @@ const Panel = () => {
     );
   }
 
+  // Компонент боковой панели
   function Sidebar() {
     return (
       <div className="sidebar d-flex flex-column p-3">

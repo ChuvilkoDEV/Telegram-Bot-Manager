@@ -3,6 +3,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 
 const AddSession = () => {
+  // Состояния для хранения данных формы
   const [proxyFile, setProxyFile] = useState(null);
   const [sessionFiles, setSessionFiles] = useState([]);
   const [accountId, setAccountId] = useState('');
@@ -10,16 +11,21 @@ const AddSession = () => {
   const [group, setGroup] = useState('default');
   const [loading, setLoading] = useState(false);
 
+  // Обработчик изменения файла прокси
   const handleProxyFileChange = (e) => {
     setProxyFile(e.target.files[0]);
   };
 
+  // Обработчик изменения файлов сессий
   const handleSessionFilesChange = (e) => {
     setSessionFiles(Array.from(e.target.files));
   };
 
+  // Обработчик отправки формы добавления аккаунта
   const handleAddAccountSubmit = async (e) => {
     e.preventDefault();
+
+    // Проверка наличия файлов прокси и сессий
     if (!proxyFile || sessionFiles.length === 0) {
       alert('Please select a proxy file and at least one session file.');
       return;
@@ -29,12 +35,14 @@ const AddSession = () => {
     const token = Cookies.get('token');
     const category = 'default';
 
+    // Чтение и парсинг файла прокси
     const proxies = await proxyFile.text();
     const proxyList = proxies.split('\n').filter(Boolean);
 
     let accountIndex = 0;
 
     try {
+      // Перебор прокси и сессий для отправки на сервер
       for (const proxy of proxyList) {
         for (let i = 0; i < accountsPerProxy; i++) {
           if (accountIndex >= sessionFiles.length) break;
@@ -51,14 +59,18 @@ const AddSession = () => {
               'Content-Type': 'multipart/form-data'
             }
           });
-          console.log(response.data)
-          console.log(sessionFiles[accountIndex], proxy)
+
+          // Логирование ответа сервера и текущих файлов
+          console.log(response.data);
+          console.log(sessionFiles[accountIndex], proxy);
+
           accountIndex++;
         }
         if (accountIndex >= sessionFiles.length) break;
       }
       alert('Accounts uploaded successfully');
     } catch (error) {
+      // Обработка ошибок
       console.error('Error uploading accounts:', error);
       alert('Failed to upload accounts.');
     } finally {
@@ -66,8 +78,11 @@ const AddSession = () => {
     }
   };
 
+  // Обработчик отправки формы удаления аккаунта
   const handleDeleteAccountSubmit = async (e) => {
     e.preventDefault();
+
+    // Проверка наличия ID аккаунта
     if (!accountId) {
       alert('Please enter an account ID.');
       return;
@@ -76,17 +91,20 @@ const AddSession = () => {
     const token = Cookies.get('token');
 
     try {
+      // Отправка запроса на удаление аккаунта
       const response = await axios.post('http://147.45.111.226:8000/api/delMySession', {
         token,
         account_id: accountId,
       });
 
+      // Проверка успешности удаления
       if (response.data.status === 'ok') {
         alert('Account deleted successfully');
       } else {
         throw new Error('Failed to delete account');
       }
     } catch (error) {
+      // Обработка ошибок
       console.error('Ошибка удаления:', error);
       alert('Не удалось удалить аккаунт');
     }

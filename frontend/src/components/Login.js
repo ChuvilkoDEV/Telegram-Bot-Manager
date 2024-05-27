@@ -6,31 +6,40 @@ import { UserContext } from './UserContext';
 import '../css/Login.css';
 
 const Login = () => {
+  // Состояния для хранения введенных данных и возможных ошибок
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+
   const navigate = useNavigate();
   const { login } = useContext(UserContext);
 
+  // Обработчик отправки формы
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      // Запрос на сервер для аутентификации пользователя
       const response = await axios.post('http://147.45.111.226:8000/api/auth/', {
         email: email,
         password: password,
       });
+
       const userData = response.data;
+
+      // Проверка статуса ответа
       if (userData.status !== 'success') {
         throw new Error('Неверный логин и/или пароль.');
       }
 
+      // Сохранение данных пользователя в куки
       Cookies.set('username', userData.username, { expires: 7 });
       Cookies.set('token', userData.token, { expires: 7 });
 
+      // Обновление контекста пользователя и перенаправление на панель
       login(userData);
       navigate('/panel');
     } catch (err) {
-      console.log(err);
+      // Обработка ошибок
       setError('Login failed. Please check your username and password.');
     }
   };

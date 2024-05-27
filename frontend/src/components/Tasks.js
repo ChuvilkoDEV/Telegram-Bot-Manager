@@ -3,14 +3,14 @@ import { useTable, useSortBy, useResizeColumns, useFilters, usePagination, useRo
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import '../css/Tasks.css'; 
+import '../css/Tasks.css';
 
 export default function Tasks({ tasks }) {
   const taskType = {
     subs: 'Подписки',
     view: 'Просмотры',
     react: 'Реакции',
-  }
+  };
 
   const data = useMemo(() => tasks || [], [tasks]);
 
@@ -33,16 +33,12 @@ export default function Tasks({ tasks }) {
       {
         Header: 'Тип задачи',
         accessor: 'task_type',
-        Cell: ({ value }) => (
-          <span>{taskType[value]}</span>
-        ),
+        Cell: ({ value }) => <span>{taskType[value]}</span>,
       },
       {
         Header: 'Цель',
         accessor: 'task_target',
-        Cell: ({ value }) => (
-          <Link to={value}>{value}</Link>
-        ),
+        Cell: ({ value }) => <Link to={value}>{value}</Link>,
       },
       {
         Header: 'Выполнение',
@@ -69,9 +65,7 @@ export default function Tasks({ tasks }) {
       {
         Header: 'Активность',
         accessor: 'active',
-        Cell: ({ value }) => (
-          <span>{value === 0 ? 'Активен' : 'Неактивна'}</span>
-        ),
+        Cell: ({ value }) => <span>{value === 0 ? 'Активен' : 'Неактивна'}</span>,
       },
       {
         Header: 'Канал',
@@ -118,7 +112,7 @@ export default function Tasks({ tasks }) {
     {
       columns,
       data,
-      initialState: { pageIndex: 0, pageSize: 50, sortBy: [{ id: 'dateAdd', desc: true }] }, // Сортировка по дате
+      initialState: { pageIndex: 0, pageSize: 50, sortBy: [{ id: 'dateAdd', desc: true }] },
     },
     useFilters,
     useSortBy,
@@ -134,17 +128,16 @@ export default function Tasks({ tasks }) {
     const token = Cookies.get('token');
 
     try {
-      const promises = selectedTasks.map((task) => 
+      const promises = selectedTasks.map((task) =>
         axios.post('http://147.45.111.226:8000/api/switchAuto', {
           token,
-          auto_task_id: task.id
+          auto_task_id: task.id,
         })
       );
       await Promise.all(promises);
       alert('Авто-задачи успешно обновлены.');
     } catch (error) {
       alert('Ошибка при обновлении авто-задач.');
-      console.error('Ошибка при обновлении авто-задач:', error);
     }
   };
 
@@ -170,11 +163,7 @@ export default function Tasks({ tasks }) {
                     <th key={index} {...rest}>
                       {column.render('Header')}
                       <span>
-                        {column.isSorted
-                          ? column.isSortedDesc
-                            ? ' 🔽'
-                            : ' 🔼'
-                          : ''}
+                        {column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ''}
                       </span>
                     </th>
                   );
@@ -204,15 +193,12 @@ export default function Tasks({ tasks }) {
           <div className="pagination">
             <button onClick={() => previousPage()} disabled={!canPreviousPage}>
               Previous
-            </button>{' '}
+            </button>
             <button onClick={() => nextPage()} disabled={!canNextPage}>
               Next
-            </button>{' '}
+            </button>
             <span>
-              Page{' '}
-              <strong>
-                {pageIndex + 1} of {pageOptions.length}
-              </strong>{' '}
+              Page <strong>{pageIndex + 1} of {pageOptions.length}</strong>
             </span>
           </div>
           <div className="page-size-options">

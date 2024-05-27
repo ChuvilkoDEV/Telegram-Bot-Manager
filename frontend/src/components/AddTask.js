@@ -3,6 +3,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import '../css/AddTask.css';
 
+// Список реакций для использования в заданиях
 const reactionsList = [
   '👍', '👎', '❤️', '🔥', '🥰', '👏', '😁', '🤔', '🤯', '😱', '🤬', '😢', '🎉', '🤩', '🤮', '💩', '🙏',
   '👌', '🕊', '🤡', '🥱', '🥴', '😍', '🐳', '❤️🔥', '🌚', '🌭', '💯', '🤣', '⚡️', '🍌', '🏆', '💔', '🤨',
@@ -12,6 +13,7 @@ const reactionsList = [
 ];
 
 const AddTask = () => {
+  // Состояния для хранения данных формы
   const [taskData, setTaskData] = useState({
     taskType: '',
     taskAuto: false,
@@ -28,6 +30,7 @@ const AddTask = () => {
   const [loading, setLoading] = useState(false);
   const [showReactionsList, setShowReactionsList] = useState(false);
 
+  // Обработчик изменения значений в форме
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setTaskData((prevData) => ({
@@ -36,11 +39,13 @@ const AddTask = () => {
     }));
   };
 
+  // Обработчик отправки формы добавления задания
   const handleAddTaskSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     const token = Cookies.get('token');
 
+    // Данные для отправки на сервер
     const data = {
       token,
       task_type: taskData.taskType,
@@ -57,6 +62,7 @@ const AddTask = () => {
     };
 
     try {
+      // Отправка данных на сервер
       const response = await axios.post('http://147.45.111.226:8000/api/addTask', data, {
         headers: { 'Content-Type': 'application/json' },
       });
@@ -70,6 +76,7 @@ const AddTask = () => {
     }
   };
 
+  // Обработчик изменения типа задания
   const handleTaskTypeChange = (e) => {
     handleChange(e);
     if (e.target.value === 'Подписки') {
@@ -77,6 +84,7 @@ const AddTask = () => {
     }
   };
 
+  // Обработчик изменения реакций
   const handleReactionsChange = (reaction) => {
     setTaskData((prevData) => ({
       ...prevData,
@@ -86,6 +94,7 @@ const AddTask = () => {
     }));
   };
 
+  // Обработчик выбора/снятия всех реакций
   const handleSelectAllReactions = () => {
     setTaskData((prevData) => ({
       ...prevData,
@@ -95,6 +104,7 @@ const AddTask = () => {
     }));
   };
 
+  // Функция для рендеринга полей ввода
   const renderInput = (label, name, type = 'text', additionalProps = {}) => (
     <div className="add-task-form-group">
       <label>{label}</label>
@@ -109,6 +119,7 @@ const AddTask = () => {
     </div>
   );
 
+  // Функция для рендеринга поля с реакциями
   const renderReactionsField = () => (
     <div className="add-task-form-group">
       <label>Reactions</label>

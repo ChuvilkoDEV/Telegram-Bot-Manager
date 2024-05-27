@@ -4,13 +4,14 @@ import { useNavigate, Link } from 'react-router-dom';
 import '../css/Register.css';
 
 const Register = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
-  const navigate = useNavigate();
+  const [name, setName] = useState(''); // Состояние для имени пользователя
+  const [email, setEmail] = useState(''); // Состояние для email
+  const [password, setPassword] = useState(''); // Состояние для пароля
+  const [confirmPassword, setConfirmPassword] = useState(''); // Состояние для подтверждения пароля
+  const [error, setError] = useState(''); // Состояние для отображения ошибок
+  const navigate = useNavigate(); // Хук для навигации
 
+  // Обработчик отправки формы
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
@@ -27,10 +28,9 @@ const Register = () => {
       if (response.data.status !== 'ok') {
         throw new Error(response.data.message || 'Ошибка при регистрации.');
       }
-      navigate('/login');
+      navigate('/login'); // Переход на страницу входа после успешной регистрации
     } catch (err) {
-      console.error(err);
-      setError('Registration failed. Please try again.');
+      setError('Регистрация не удалась. Пожалуйста, попробуйте снова.');
     }
   };
 
@@ -42,7 +42,7 @@ const Register = () => {
           <Link to="/login" className="nav-button">Вход</Link>
           <Link to="/register" className="nav-button active">Регистрация</Link>
         </div>
-        {error && <div className="alert alert-danger" role="alert">{error}</div>}
+        {error && <div className="alert alert-danger" role="alert">{error}</div>} {/* Отображение ошибки */}
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <input

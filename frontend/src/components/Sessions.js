@@ -6,11 +6,11 @@ import axios from 'axios';
 import '../css/Sessions.css';
 
 export default function Sessions({ sessions = [], refreshData }) {
-  const [filterStatus, setFilterStatus] = useState(null);
-  const [showFilters, setShowFilters] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-  const [file, setFile] = useState(null);
-  const [accountsPerProxy, setAccountsPerProxy] = useState('');
+  const [filterStatus, setFilterStatus] = useState(null); // Состояние для фильтрации по статусу
+  const [showFilters, setShowFilters] = useState(false); // Состояние для отображения фильтров
+  const [showModal, setShowModal] = useState(false); // Состояние для отображения модального окна
+  const [file, setFile] = useState(null); // Состояние для файла прокси
+  const [accountsPerProxy, setAccountsPerProxy] = useState(''); // Состояние для количества аккаунтов на прокси
 
   const statuses = {
     0: ['Работает', 'text-success'],
@@ -18,6 +18,7 @@ export default function Sessions({ sessions = [], refreshData }) {
     2: ['Восстановлено', 'text-warning'],
   };
 
+  // Фильтрация данных по статусу
   const filteredData = useMemo(() => {
     if (filterStatus === null) return sessions.slice().reverse();
     return sessions.filter(session => session.ban === filterStatus).slice().reverse();
@@ -72,6 +73,7 @@ export default function Sessions({ sessions = [], refreshData }) {
     []
   );
 
+  // Использование хуков useTable и других для создания таблицы
   const {
     getTableProps,
     getTableBodyProps,
@@ -98,6 +100,7 @@ export default function Sessions({ sessions = [], refreshData }) {
     useRowSelect
   );
 
+  // Подсчет количества сессий по статусам
   const total = sessions.length;
   const working = sessions.filter(session => session.ban === 0).length;
   const recovered = sessions.filter(session => session.ban === 2).length;
@@ -159,7 +162,6 @@ export default function Sessions({ sessions = [], refreshData }) {
         refreshData();
       } catch (error) {
         alert('Ошибка при обновлении прокси.');
-        console.error('Ошибка при обновлении прокси:', error);
       }
     };
 
