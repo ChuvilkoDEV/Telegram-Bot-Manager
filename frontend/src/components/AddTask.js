@@ -12,6 +12,8 @@ const reactionsList = [
   '🤷♂️', '🤷', '🤷♀️', '😡'
 ];
 
+const task_type = { 'Просмотры': 'view', 'Реакции': 'react', 'Подписки': 'subs' }
+
 const AddTask = () => {
   // Состояния для хранения данных формы
   const [taskData, setTaskData] = useState({
@@ -19,9 +21,9 @@ const AddTask = () => {
     taskAuto: false,
     taskTarget: '',
     group: 'all',
-    taskCountActions: 500,
+    taskCountActions: 1,
     taskTimeOut: 1,
-    countActionPerTimeout: 500,
+    countActionPerTimeout: 1,
     percentWave: 0,
     percentMarkupSpread: 0,
     taskChannelId: '',
@@ -39,26 +41,43 @@ const AddTask = () => {
     }));
   };
 
+  // Преобразование числовых полей в числа перед отправкой
+  const transformData = (data) => ({
+    ...data,
+    taskCountActions: Number(data.taskCountActions),
+    taskTimeOut: Number(data.taskTimeOut),
+    countActionPerTimeout: Number(data.countActionPerTimeout),
+    percentWave: Number(data.percentWave),
+    percentMarkupSpread: Number(data.percentMarkupSpread),
+  });
+
   // Обработчик отправки формы добавления задания
   const handleAddTaskSubmit = async (e) => {
     e.preventDefault();
+    if (taskData.taskType === 'Подписки' && !taskData.taskChannelId) {
+      alert('Channel ID is required for Subscriptions');
+      return;
+    }
     setLoading(true);
     const token = Cookies.get('token');
+
+    // Преобразование данных перед отправкой на сервер
+    const transformedData = transformData(taskData);
 
     // Данные для отправки на сервер
     const data = {
       token,
-      task_type: taskData.taskType,
-      task_target: taskData.taskTarget,
-      task_count_actions: taskData.taskCountActions,
-      task_reactions: taskData.taskReactions,
-      task_time_out: taskData.taskTimeOut,
-      task_channel_id: taskData.taskAuto ? taskData.taskChannelId : '',
-      task_auto: taskData.taskAuto,
-      count_action_per_timeout: taskData.countActionPerTimeout,
-      percetn_wave: taskData.percentWave,
-      percent_markup_spread: taskData.percentMarkupSpread,
-      group: taskData.group,
+      task_type: task_type[transformedData.taskType],
+      task_target: transformedData.taskTarget,
+      task_count_actions: transformedData.taskCountActions,
+      task_reactions: transformedData.taskReactions,
+      task_time_out: transformedData.taskTimeOut,
+      task_channel_id: transformedData.taskChannelId,
+      task_auto: transformedData.taskAuto,
+      count_action_per_timeout: transformedData.countActionPerTimeout,
+      percetn_wave: transformedData.percentWave,
+      percent_markup_spread: transformedData.percentMarkupSpread,
+      group: transformedData.group,
     };
 
     try {
@@ -78,10 +97,13 @@ const AddTask = () => {
 
   // Обработчик изменения типа задания
   const handleTaskTypeChange = (e) => {
-    handleChange(e);
-    if (e.target.value === 'Подписки') {
-      setTaskData((prevData) => ({ ...prevData, taskAuto: false }));
-    }
+    const { value } = e.target;
+    setTaskData((prevData) => ({
+      ...prevData,
+      taskType: value,
+      taskChannelId: value === 'Подписки' ? prevData.taskChannelId : '', // Reset taskChannelId if not "Подписки"
+      taskAuto: value === 'Реакции' || value === 'Просмотры' ? prevData.taskAuto : false, // Reset taskAuto if not "Реакции" or "Просмотры"
+    }));
   };
 
   // Обработчик изменения реакций
@@ -177,7 +199,7 @@ const AddTask = () => {
               </select>
             </div>
             {taskData.taskType === 'Реакции' && renderReactionsField()}
-            {taskData.taskType !== 'Подписки' && (
+            {(taskData.taskType === 'Реакции' || taskData.taskType === 'Просмотры') && (
               <div className="add-task-form-group-checkbox">
                 <label>
                   <input
@@ -187,11 +209,14 @@ const AddTask = () => {
                     onChange={handleChange}
                     className="add-task-form-control-checkbox"
                   />
-                  Auto
+                  Auto Task
                 </label>
-                {taskData.taskAuto && renderInput('Channel ID', 'taskChannelId')}
               </div>
             )}
+            {renderInput('Channel ID', 'taskChannelId', 'text', {
+              required: taskData.taskType === 'Подписки',
+              disabled: taskData.taskAuto === true || taskData.taskType === 'Подписки',
+            })}
             {renderInput('Target', 'taskTarget')}
             {renderInput('Group', 'group')}
             {renderInput('Action Count', 'taskCountActions', 'number', { min: 1, max: 3635 })}
