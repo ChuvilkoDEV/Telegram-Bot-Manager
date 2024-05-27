@@ -88,8 +88,8 @@ const Panel = () => {
     Sessions: { verboseName: 'Мои аккаунты', icon: 'fas fa-home', view: <Sessions sessions={sessions} refreshData={refreshData} />, forAdmin: false },
     AllSessions: { verboseName: 'Все аккаунты', icon: 'fas fa-home', view: <Sessions sessions={allSessions} refreshData={refreshData} />, forAdmin: true },
     AddSession: { verboseName: 'Добавить сессию', icon: 'fas fa-bolt', view: <AddSession />, forAdmin: false },
-    Tasks: { verboseName: 'Задачи', icon: 'fas fa-tasks', view: <Tasks tasks={tasks} />, forAdmin: false },
-    AutoTasks: { verboseName: 'Авто-задачи', icon: 'fas fa-bolt', view: <Tasks tasks={autoTasks} />, forAdmin: false },
+    Tasks: { verboseName: 'Задачи', icon: 'fas fa-tasks', view: <Tasks tasks={tasks}  refreshData={refreshData} />, forAdmin: false },
+    AutoTasks: { verboseName: 'Авто-задачи', icon: 'fas fa-bolt', view: <Tasks tasks={autoTasks}  refreshData={refreshData} />, forAdmin: false },
     AddTask: { verboseName: 'Добавить задачу', icon: 'fas fa-bolt', view: <AddTask />, forAdmin: false },
   };
 

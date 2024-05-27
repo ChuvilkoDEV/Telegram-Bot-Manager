@@ -12,7 +12,11 @@ const reactionsList = [
   '🤷♂️', '🤷', '🤷♀️', '😡'
 ];
 
-const task_type = { 'Просмотры': 'view', 'Реакции': 'react', 'Подписки': 'subs' }
+const taskTypeOptions = {
+  'view': 'Просмотры',
+  'react': 'Реакции',
+  'subs': 'Подписки'
+};
 
 const AddTask = () => {
   // Состояния для хранения данных формы
@@ -31,6 +35,8 @@ const AddTask = () => {
   });
   const [loading, setLoading] = useState(false);
   const [showReactionsList, setShowReactionsList] = useState(false);
+  const [message, setMessage] = useState(null);
+  const [isError, setIsError] = useState(false);
 
   // Обработчик изменения значений в форме
   const handleChange = (e) => {
@@ -54,8 +60,9 @@ const AddTask = () => {
   // Обработчик отправки формы добавления задания
   const handleAddTaskSubmit = async (e) => {
     e.preventDefault();
-    if (taskData.taskType === 'Подписки' && !taskData.taskChannelId) {
-      alert('Channel ID is required for Subscriptions');
+    if (taskData.taskType === 'subs' && !taskData.taskChannelId) {
+      setMessage('ID канала обязателен для подписок');
+      setIsError(true);
       return;
     }
     setLoading(true);
@@ -67,10 +74,10 @@ const AddTask = () => {
     // Данные для отправки на сервер
     const data = {
       token,
-      task_type: task_type[transformedData.taskType],
+      task_type: transformedData.taskType,
       task_target: transformedData.taskTarget,
       task_count_actions: transformedData.taskCountActions,
-      task_reactions: transformedData.taskReactions,
+      task_obj: transformedData.taskReactions,
       task_time_out: transformedData.taskTimeOut,
       task_channel_id: transformedData.taskChannelId,
       task_auto: transformedData.taskAuto,
@@ -86,10 +93,12 @@ const AddTask = () => {
         headers: { 'Content-Type': 'application/json' },
       });
       console.log(response.data);
-      alert('Task added successfully');
+      setMessage('Задание успешно добавлено');
+      setIsError(false);
     } catch (error) {
-      console.error('Error adding task:', error);
-      alert('Failed to add task.');
+      console.error('Ошибка при добавлении задания:', error);
+      setMessage('Не удалось добавить задание.');
+      setIsError(true);
     } finally {
       setLoading(false);
     }
@@ -101,8 +110,8 @@ const AddTask = () => {
     setTaskData((prevData) => ({
       ...prevData,
       taskType: value,
-      taskChannelId: value === 'Подписки' ? prevData.taskChannelId : '', // Reset taskChannelId if not "Подписки"
-      taskAuto: value === 'Реакции' || value === 'Просмотры' ? prevData.taskAuto : false, // Reset taskAuto if not "Реакции" or "Просмотры"
+      taskChannelId: value === 'subs' ? prevData.taskChannelId : '',
+      taskAuto: value === 'react' || value === 'view' ? prevData.taskAuto : false,
     }));
   };
 
@@ -144,14 +153,14 @@ const AddTask = () => {
   // Функция для рендеринга поля с реакциями
   const renderReactionsField = () => (
     <div className="add-task-form-group">
-      <label>Reactions</label>
+      <label>Реакции</label>
       <div
         className="add-task-reactions-field"
         onClick={() => setShowReactionsList(!showReactionsList)}
       >
         {taskData.taskReactions.length > 0
           ? taskData.taskReactions.join(' ')
-          : 'Select Reactions'}
+          : 'Выберите реакции'}
       </div>
       {showReactionsList && (
         <div className="add-task-reactions-popup">
@@ -171,7 +180,7 @@ const AddTask = () => {
             onClick={handleSelectAllReactions}
             className="add-task-btn add-task-btn-secondary"
           >
-            {taskData.taskReactions.length === reactionsList.length ? 'Deselect All' : 'Select All'}
+            {taskData.taskReactions.length === reactionsList.length ? 'Отменить выбор всех' : 'Выбрать все'}
           </button>
         </div>
       )}
@@ -182,24 +191,24 @@ const AddTask = () => {
     <div className="content">
       <div className="add-task-form-container">
         <div className="add-task-form-section">
-          <h2>Add Task</h2>
+          <h2>Добавить задание</h2>
           <form onSubmit={handleAddTaskSubmit}>
             <div className="add-task-form-group">
-              <label>Type</label>
+              <label>Тип</label>
               <select
                 name="taskType"
                 value={taskData.taskType}
                 onChange={handleTaskTypeChange}
                 className="add-task-form-control"
               >
-                <option value="">Select Type</option>
-                <option value="Реакции">Reactions</option>
-                <option value="Подписки">Subscriptions</option>
-                <option value="Просмотры">Views</option>
+                <option value="">Выберите тип</option>
+                <option value="react">Реакции</option>
+                <option value="subs">Подписки</option>
+                <option value="view">Просмотры</option>
               </select>
             </div>
-            {taskData.taskType === 'Реакции' && renderReactionsField()}
-            {(taskData.taskType === 'Реакции' || taskData.taskType === 'Просмотры') && (
+            {taskData.taskType === 'react' && renderReactionsField()}
+            {(taskData.taskType === 'react' || taskData.taskType === 'view') && (
               <div className="add-task-form-group-checkbox">
                 <label>
                   <input
@@ -209,24 +218,29 @@ const AddTask = () => {
                     onChange={handleChange}
                     className="add-task-form-control-checkbox"
                   />
-                  Auto Task
+                  Автоматическое задание
                 </label>
               </div>
             )}
-            {renderInput('Channel ID', 'taskChannelId', 'text', {
-              required: taskData.taskType === 'Подписки',
-              disabled: taskData.taskAuto === true || taskData.taskType === 'Подписки',
+            {renderInput('ID канала', 'taskChannelId', 'text', {
+              required: taskData.taskType === 'subs',
+              disabled: !(taskData.taskType === 'subs' || (taskData.taskType !== 'subs' && taskData.taskAuto)),
             })}
-            {renderInput('Target', 'taskTarget')}
-            {renderInput('Group', 'group')}
-            {renderInput('Action Count', 'taskCountActions', 'number', { min: 1, max: 3635 })}
-            {renderInput('Time Out', 'taskTimeOut', 'number')}
-            {renderInput('Count per Timeout', 'countActionPerTimeout', 'number')}
-            {renderInput('Wave %', 'percentWave', 'number')}
-            {renderInput('Markup Spread %', 'percentMarkupSpread', 'number')}
+            {renderInput('Цель', 'taskTarget')}
+            {renderInput('Группа', 'group')}
+            {renderInput('Количество действий', 'taskCountActions', 'number', { min: 1, max: 3635 })}
+            {renderInput('Тайм-аут', 'taskTimeOut', 'number')}
+            {renderInput('Количество на тайм-аут', 'countActionPerTimeout', 'number')}
+            {renderInput('Волна %', 'percentWave', 'number')}
+            {renderInput('Маржа %', 'percentMarkupSpread', 'number')}
             <button type="submit" className="add-task-btn add-task-btn-primary" disabled={loading}>
-              {loading ? 'Submitting...' : 'Submit'}
+              {loading ? 'Отправка...' : 'Отправить'}
             </button>
+            {message && (
+              <div className={`add-task-message ${isError ? 'add-task-error' : 'add-task-success'}`}>
+                {message}
+              </div>
+            )}
           </form>
         </div>
       </div>

@@ -3,9 +3,10 @@ import { useTable, useSortBy, useResizeColumns, useFilters, usePagination, useRo
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import { FaSync } from 'react-icons/fa'; // Импорт иконки обновления
 import '../css/Tasks.css';
 
-export default function Tasks({ tasks }) {
+export default function Tasks({ tasks, refreshData }) { // Добавлен пропс refreshData
   const taskType = {
     subs: 'Подписки',
     view: 'Просмотры',
@@ -149,6 +150,13 @@ export default function Tasks({ tasks }) {
           {hasSelectedRows && (
             <button className="btn btn-primary" onClick={handleAutoTask}>Сменить на авто-задачу</button>
           )}
+          <button
+            className="btn btn-secondary refresh-btn" // Добавлена кнопка обновления
+            onClick={refreshData}
+            aria-label="Обновить данные"
+          >
+            <FaSync />
+          </button>
         </div>
       </div>
 
