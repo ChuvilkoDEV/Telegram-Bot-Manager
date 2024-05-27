@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import '../css/AddTask.css';
@@ -18,13 +18,13 @@ const taskTypeOptions = {
   'subs': 'Подписки'
 };
 
-const AddTask = () => {
+const AddTask = ({ sessions = [] }) => {
   // Состояния для хранения данных формы
   const [taskData, setTaskData] = useState({
     taskType: '',
     taskAuto: false,
     taskTarget: '',
-    group: 'all',
+    group: '',
     taskCountActions: 1,
     taskTimeOut: 1,
     countActionPerTimeout: 1,
@@ -37,6 +37,16 @@ const AddTask = () => {
   const [showReactionsList, setShowReactionsList] = useState(false);
   const [message, setMessage] = useState(null);
   const [isError, setIsError] = useState(false);
+  const [uniqueGroups, setUniqueGroups] = useState([]);
+
+  // Получение уникальных групп из sessions
+  useEffect(() => {
+    console.log(sessions)
+    if (sessions && sessions.length > 0) {
+      const groups = Array.from(new Set(sessions.map(session => session.group)));
+      setUniqueGroups(groups);
+    }
+  }, [sessions]);
 
   // Обработчик изменения значений в форме
   const handleChange = (e) => {
@@ -92,7 +102,8 @@ const AddTask = () => {
       const response = await axios.post('http://147.45.111.226:8000/api/addTask', data, {
         headers: { 'Content-Type': 'application/json' },
       });
-      console.log(response.data);
+      if (response.data.status === 'fail') 
+        throw new Error(response.data.message)
       setMessage('Задание успешно добавлено');
       setIsError(false);
     } catch (error) {
@@ -227,7 +238,22 @@ const AddTask = () => {
               disabled: !(taskData.taskType === 'subs' || (taskData.taskType !== 'subs' && taskData.taskAuto)),
             })}
             {renderInput('Цель', 'taskTarget')}
-            {renderInput('Группа', 'group')}
+            <div className="add-task-form-group">
+              <label>Группа</label>
+              <select
+                name="group"
+                value={taskData.group}
+                onChange={handleChange}
+                className="add-task-form-control"
+              >
+                <option value="">Выберите группу</option>
+                {uniqueGroups.map((group) => (
+                  <option key={group} value={group}>
+                    {group}
+                  </option>
+                ))}
+              </select>
+            </div>
             {renderInput('Количество действий', 'taskCountActions', 'number', { min: 1, max: 3635 })}
             {renderInput('Тайм-аут', 'taskTimeOut', 'number')}
             {renderInput('Количество на тайм-аут', 'countActionPerTimeout', 'number')}
