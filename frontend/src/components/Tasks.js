@@ -200,23 +200,24 @@ export default function Tasks({ tasks, refreshData }) { // Добавлен пр
         <div className="pagination-container">
           <div className="pagination">
             <button onClick={() => previousPage()} disabled={!canPreviousPage}>
-              Previous
+              Назад
             </button>
             <button onClick={() => nextPage()} disabled={!canNextPage}>
-              Next
+              Вперед
             </button>
             <span>
-              Page <strong>{pageIndex + 1} of {pageOptions.length}</strong>
+              Страница{' '}
+              <strong>
+                {pageIndex + 1} из {pageOptions.length}
+              </strong>{' '}
             </span>
           </div>
           <div className="page-size-options">
-            <span>Show </span>
-            {[10, 25, 50, 100, data.length].map(size => (
-              <button key={size} onClick={() => setPageSize(size)} className="btn btn-link">
-                {size === data.length ? 'All' : size}
-              </button>
-            ))}
-            <span>rows</span>
+            <button onClick={() => setPageSize(10)}>10</button>
+            <button onClick={() => setPageSize(25)}>25</button>
+            <button onClick={() => setPageSize(50)}>50</button>
+            <button onClick={() => setPageSize(100)}>100</button>
+            <button onClick={() => setPageSize(tasks.length)}>Показать все</button>
           </div>
         </div>
       </div>

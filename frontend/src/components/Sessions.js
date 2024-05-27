@@ -251,50 +251,40 @@ export default function Sessions({ sessions = [], refreshData }) {
             ))}
           </thead>
           <tbody {...getTableBodyProps()}>
-            {page.map((row, rowIndex) => {
+            {page.map((row) => {
               prepareRow(row);
               return (
-                <tr key={rowIndex} {...row.getRowProps()}>
-                  {row.cells.map((cell, cellIndex) => {
-                    const { key, ...rest } = cell.getCellProps();
-                    return (
-                      <td key={cellIndex} {...rest} style={{ width: cell.column.width }}>
-                        {cell.render('Cell')}
-                      </td>
-                    );
-                  })}
+                <tr {...row.getRowProps()}>
+                  {row.cells.map((cell) => (
+                    <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                  ))}
                 </tr>
               );
             })}
           </tbody>
         </table>
-        <div className="pagination-container">
-          <div className="pagination">
-            <button onClick={() => previousPage()} disabled={!canPreviousPage}>
-              {'<'}
-            </button>
-            <span>
-              Страница{' '}
-              <strong>
-                {pageIndex + 1} из {pageOptions.length}
-              </strong>
-            </span>
-            <button onClick={() => nextPage()} disabled={!canNextPage}>
-              {'>'}
-            </button>
-          </div>
-          <div className="page-size-options">
-            <span>Показывать по:</span>
-            {[50, 100, 200].map((size) => (
-              <button
-                key={size}
-                className={pageSize === size ? 'active' : ''}
-                onClick={() => setPageSize(size)}
-              >
-                {size}
-              </button>
-            ))}
-          </div>
+      </div>
+      <div className="pagination-container">
+        <div className="pagination">
+          <button onClick={() => previousPage()} disabled={!canPreviousPage}>
+            Назад
+          </button>
+          <button onClick={() => nextPage()} disabled={!canNextPage}>
+            Вперед
+          </button>
+          <span>
+            Страница{' '}
+            <strong>
+              {pageIndex + 1} из {pageOptions.length}
+            </strong>{' '}
+          </span>
+        </div>
+        <div className="page-size-options">
+          <button onClick={() => setPageSize(10)}>10</button>
+          <button onClick={() => setPageSize(25)}>25</button>
+          <button onClick={() => setPageSize(50)}>50</button>
+          <button onClick={() => setPageSize(100)}>100</button>
+          <button onClick={() => setPageSize(sessions.length)}>Показать все</button>
         </div>
       </div>
     </div>
